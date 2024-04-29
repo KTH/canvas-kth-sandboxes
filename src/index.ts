@@ -4,7 +4,7 @@ import { Router, Request, Response } from "express";
 const app = express();
 const port = 3000;
 
-app.listen(port, () => console.log("It is working!"));
+app.listen(port, () => console.log("Sandbox app up and running"));
 
 const router = Router();
 

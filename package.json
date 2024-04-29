@@ -4,6 +4,7 @@
   "description": "Application to create sandbox courserooms in Canvas",
   "main": "src/index.js",
   "dependencies": {
+    "@kth/canvas-api": "^4.2.2",
     "express": "^4.19.2",
     "fast-csv": "^5.0.1",
     "fs": "^0.0.1-security",
