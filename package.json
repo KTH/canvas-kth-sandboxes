@@ -6,7 +6,6 @@
   "dependencies": {
     "@kth/canvas-api": "^4.2.2",
     "express": "^4.19.2",
-    "fast-csv": "^5.0.1",
     "fs": "^0.0.1-security",
     "got": "^14.2.1",
     "skog": "^3.0.2",
