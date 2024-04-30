@@ -2,13 +2,13 @@
 // Read more: https://www.typescriptlang.org/docs/handbook/declaration-merging.html
 
 // Declare what is returned from Canvas oAuth
-/* declare module "openid-client" {
+declare module "openid-client" {
   interface TokenSet {
     user: {
       id: number;
     };
   }
-} */
+} 
 
 // Declare what is stored in the session
 declare module "express-session" {
@@ -20,3 +20,4 @@ declare module "express-session" {
     userId: number;
   }
 }
+export {}
