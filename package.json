@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "description": "Application to create sandbox courserooms in Canvas",
   "main": "src/index.js",
-  "version": "0.1.0",
-  "description": "Application to create sandbox courserooms in Canvas",
-  "main": "src/index.js",
   "dependencies": {
     "@kth/canvas-api": "^4.2.2",
     "dotenv": "^16.4.5",
