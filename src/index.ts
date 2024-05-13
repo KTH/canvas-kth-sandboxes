@@ -7,6 +7,7 @@ import express from "express";
 import { Router, Request, Response } from "express";
 import sessionMiddleware from "express-session";
 import log from "skog";
+import { getNameOfDeclaration } from "typescript";
 
 
 const app = express();
@@ -23,6 +24,20 @@ const testAccountIds: string[] = [
 
 
 app.listen(port, () => log.info("Sandbox app up and running"));
+
+const authCheckMiddleware = function (req: Request, res: Response, next:Function){
+  // if (req.path === "/canvas-kth-sandboxes/_monitor" && req.session === undefined){
+  //   log.info("This user was not authenticated");
+  //   res.redirect("/canvas-kth-sandboxes/auth");
+  // }else{
+  // next()
+  // }
+  // log.info(req.path);
+  next();
+
+}
+
+app.use(authCheckMiddleware)
 app.use(
     sessionMiddleware({
       name: "canvas-kth-sandboxes.sid",
@@ -45,21 +60,24 @@ app.use(
     })
   );
 
-const router = Router();
 
+
+const router = Router();
+const path = require('path');
 
 app.use("/canvas-kth-sandboxes", router);
 app.use("/canvas-kth-sandboxes/auth", authRouter);
-
+app.use("/canvas-kth-sandboxes/public", express.static(path.join(__dirname, 'html')));
 router.get("/_monitor", monitor);
-router.post("/", start);
+
 
 async function monitor(req: Request, res: Response) {  
   try {
     res.send("OK");
   } catch (error) {
+    log.error("Error: something went wrong.");
     res.send("Application status: ERROR");
-    log.error("Error: something went wrong.")
+    
   }
 };
 
