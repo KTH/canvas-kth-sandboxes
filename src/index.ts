@@ -1,4 +1,6 @@
+
 import "./config/start";
+import "./env";
 import authRouter from "./auth/auth";
 import {createCourse, enrollUser, getUser} from "./canvasApi"
 import express from "express";
@@ -65,7 +67,7 @@ async function start(req: Request, res: Response): Promise<void> {
   // recive response object with info [userId] [School]?
   // UserId generate course code
   const userId = req.body.userId;
-  const school = req.body.school
+  const school = req.body.school;
   
   const userName = await getUser(userId);
   // Post call to api for create course with [name],[course_code],
@@ -74,7 +76,7 @@ async function start(req: Request, res: Response): Promise<void> {
   // /api/v1/accounts/:account_id{school}/courses
   // Post call to api for enroll user and teststudents
   await enrollUser(userId, userName, "TeacherEnrollment");
-  log.info(`${userName} was enrolled as Teacher.`)
+  log.info(`${userName} was enrolled as Teacher.`);
 
   for (const testStudent in testAccountIds){
     await enrollUser(testStudent, userName, "StudentEnrollment");
