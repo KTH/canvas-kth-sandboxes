@@ -61,8 +61,8 @@ async function start(req: Request, res: Response): Promise<void> {
   // const school = req.body.school;
   const school = "ABE";
   log.info("Information supplied");
-  const userName = await getUser(userId);
-  log.info(userName);
+  //const userName = await getUser(userId);
+  //log.info(userName);
   // // Post call to api for create course with [name],[course_code],
   // await createCourse(userName, school);
   // log.info(`Course "Sandbox ${userName}" created`);
