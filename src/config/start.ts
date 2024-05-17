@@ -1,4 +1,5 @@
 import log from "skog";
+require("dotenv").config();
 
 
 process.on("uncaughtException", (err) => {
