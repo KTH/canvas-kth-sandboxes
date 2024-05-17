@@ -4,7 +4,7 @@ import { Issuer, generators, errors } from "openid-client";
 import log from "skog";
 
 // Assuming that this router is going to be in
-// https://localdev.kth.se:4443/transfer-to-ladok/auth
+// https://localdev.kth.se:4443/canvas-kth-sandboxes/auth
 const oauthRedirectUrl = new URL(
   "/canvas-kth-sandboxes/auth/callback",
   process.env.PROXY_HOST
@@ -36,8 +36,8 @@ const router = Router();
 
 router.get("/", (req, res) => {
 
-  // const state = generators.state();
-  const state = "tempState"; 
+  const state = generators.state();
+  // const state = "tempState"; 
 
   req.session.tmpState = state;
 
@@ -46,8 +46,8 @@ router.get("/", (req, res) => {
 router.get("/callback", async (req, res) => {
   try {
     const tokenSet = await client.oauthCallback(oauthRedirectUrl, req.query, {
-        state: "tempState" //state:
-        // state: req.session.tmpState,
+        // state: "tempState" //state:
+        state: req.session.tmpState,
     });
     log.info(tokenSet);
 

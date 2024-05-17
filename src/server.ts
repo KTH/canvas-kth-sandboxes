@@ -18,7 +18,7 @@ let opts = {
 };
 https.createServer(opts, app).listen(3000);
 
-//app.listen(port, () => log.info("Sandbox app up and running"));
+log.info("Sandbox app up and running");
 app.set("trust proxy", 1);
 app.use(express.urlencoded({extended: false}));
 app.use(
@@ -30,7 +30,7 @@ app.use(
         domain: new URL(process.env.PROXY_HOST || "").hostname,
         maxAge: 14 * 24 * 3600 * 1000,
         httpOnly: true,
-        secure: true,
+        secure: "auto",
         sameSite: "none",
       },
   
