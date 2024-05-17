@@ -30,8 +30,8 @@ app.use(
         domain: new URL(process.env.PROXY_HOST || "").hostname,
         maxAge: 14 * 24 * 3600 * 1000,
         httpOnly: true,
-        secure: false,
-        sameSite: false,
+        secure: true,
+        sameSite: "none",
       },
   
       // Read more: https://www.npmjs.com/package/express-session#resave
