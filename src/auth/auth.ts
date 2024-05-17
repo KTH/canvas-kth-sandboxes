@@ -48,15 +48,14 @@ router.get("/callback", async (req, res) => {
         state: "tempState" //state: req.session.tmpState,
     });
     log.info(tokenSet);
-    // const courseId = req.session.tmpCourseId || "";
 
-    // req.session.tmpCourseId = undefined;
     req.session.tmpState = undefined;
     req.session.accessToken = tokenSet.access_token;
     req.session.refreshToken = tokenSet.refresh_token;
     req.session.userId = tokenSet.user.id;
-    res.send("OK");
-    // res.redirect(`/transfer-to-ladok/?courseId=${courseId}`);
+
+
+    res.redirect("/canvas-kth-sandboxes/public");
   } catch (err) {
     if (err instanceof errors.OPError && err.message === "access_denied") {
       // The user has not accepted the oauth request
