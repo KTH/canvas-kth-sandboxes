@@ -3,15 +3,22 @@ import express from "express";
 import sessionMiddleware from "express-session";
 import { Router} from "express";
 import log from "skog";
-
+import selfsigned from "selfsigned";
+import https from "https";
 import session from "express-session";
 
 
 const app = express();
 const port = 3000;
 
+const selfSigned = selfsigned.generate([{name: 'commonName', value: 'kth.se' }], {days: 365});
+let opts = { 
+  key: selfSigned.private,
+  cert: selfSigned.cert
+};
+https.createServer(opts, app).listen(3000);
 
-app.listen(port, () => log.info("Sandbox app up and running"));
+//app.listen(port, () => log.info("Sandbox app up and running"));
 app.set("trust proxy", 1);
 app.use(express.urlencoded({extended: false}));
 app.use(
