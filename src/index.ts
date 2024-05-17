@@ -57,7 +57,7 @@ async function start(req: Request, res: Response): Promise<void> {
   // recive response object with info [userId] [School]?
   // UserId generate course code
   // const userId = req.body.userId;
-  const userId = "u1rt0vw0";
+  const userId = "sis_id";
   // const school = req.body.school;
   const school = "ABE";
   log.info("Information supplied");
