@@ -18,7 +18,7 @@ const testAccountIds: string[] = [
 ];
 
 router.use("/auth", authRouter);
-router.use("/public", homepage);
+//router.use("/public", homepage);
 router.get("/public", (req, res) => {
   res.sendFile(path.join(__dirname, '/html/index.html'));
 });
@@ -57,15 +57,20 @@ async function start(req: Request, res: Response): Promise<void> {
   // recive response object with info [userId] [School]?
   // UserId generate course code
   // const userId = req.body.userId;
-  const userId = "sis_id";
+  log.info("inside start func");
+  const userId = "u1rt0vw0";
   // const school = req.body.school;
   const school = "ABE";
-  log.info("Information supplied");
-  //const userName = await getUser(userId);
-  //log.info(userName);
+
+  const user = await getUser(userId);
+  
+  const userName = user.body.login_id.split("@")[0];
+
+  log.info(userName);
   // // Post call to api for create course with [name],[course_code],
-  // await createCourse(userName, school);
-  // log.info(`Course "Sandbox ${userName}" created`);
+  const account_id = await getAccountId(school);
+  const course = await createCourse(userName, school);
+  log.info(`Course "Sandbox ${userName}" created`);
   // // /api/v1/accounts/:account_id{school}/courses
   // // Post call to api for enroll user and teststudents
   // await enrollUser(userId, userName, "TeacherEnrollment");
