@@ -1,6 +1,6 @@
 
 import "./config/start";
-import {createCourse, enrollUser, getUser} from "./canvasApi"
+import {createCourse, enrollUser, getUser, getSchoolAccountId, getSandboxAccountId} from "./canvasApi"
 import {Request, Response } from "express";
 import log from "skog";
 import path from "path";
@@ -68,8 +68,10 @@ async function start(req: Request, res: Response): Promise<void> {
 
   log.info(userName);
   // // Post call to api for create course with [name],[course_code],
-  const account_id = await getAccountId(school);
-  const course = await createCourse(userName, school);
+  const schoolAccountId = await getSchoolAccountId(school);
+  const sandboxAccountId = await getSandboxAccountId(schoolAccountId, school);
+
+  const course = await createCourse(userName, sandboxAccountId);
   log.info(`Course "Sandbox ${userName}" created`);
   // // /api/v1/accounts/:account_id{school}/courses
   // // Post call to api for enroll user and teststudents
