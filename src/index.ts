@@ -18,7 +18,7 @@ const testAccountIds: string[] = [
 ];
 
 router.use("/auth", authRouter);
-//router.use("/public", homepage);
+router.use("/public", homepage);
 router.get("/public", (req, res) => {
   res.sendFile(path.join(__dirname, '/html/index.html'));
 });
@@ -53,10 +53,9 @@ router.post("/create-sandbox", start);
 
 
 async function start(req: Request, res: Response): Promise<void> {
-  //checkAuth(req, res);
 
-  const sisUserId = "u1rt0vw0";
-  const school = "ABE";
+  const sisUserId = req.body.userId;
+  const school = req.body.school.toUpperCase();
 
   const user = await getUser(sisUserId);
   
@@ -69,12 +68,12 @@ async function start(req: Request, res: Response): Promise<void> {
   const courseId = course.body.id;
 
   await enrollUser(userId, courseId, "TeacherEnrollment");
-  log.info(`was enrolled as Teacher.`);
 
   for (const testStudent of testAccountIds){
     await enrollUser(testStudent, courseId, "StudentEnrollment");
   }
-  log.info(`Test students have been enrolled.`)
+
+  res.sendFile(path.join(__dirname, '/html/done.html'));
 
 }
 

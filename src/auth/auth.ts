@@ -37,7 +37,6 @@ const router = Router();
 router.get("/", (req, res) => {
 
   const state = generators.state();
-  // const state = "tempState"; 
 
   req.session.tmpState = state;
 
@@ -46,7 +45,6 @@ router.get("/", (req, res) => {
 router.get("/callback", async (req, res) => {
   try {
     const tokenSet = await client.oauthCallback(oauthRedirectUrl, req.query, {
-        // state: "tempState" //state:
         state: req.session.tmpState,
     });
     log.info(tokenSet);
