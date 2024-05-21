@@ -9,12 +9,12 @@ import authRouter from "./auth/auth";
 import router from "./server";
 
 const testAccountIds: string[] = [
-  "u19x1wr9",
-  "u1s998q4",
-  "u16rvqcl",
-  "u19scdbu",
-  "u1fdh8le",
-  "u1ispahy",
+  "97021",
+  "97017",
+  "97016",
+  "97018",
+  "97020",
+  "97019",
 ];
 
 router.use("/auth", authRouter);
@@ -54,35 +54,27 @@ router.post("/create-sandbox", start);
 
 async function start(req: Request, res: Response): Promise<void> {
   //checkAuth(req, res);
-  // recive response object with info [userId] [School]?
-  // UserId generate course code
-  // const userId = req.body.userId;
-  log.info("inside start func");
-  const userId = "u1rt0vw0";
-  // const school = req.body.school;
+
+  const sisUserId = "u1rt0vw0";
   const school = "ABE";
 
-  const user = await getUser(userId);
+  const user = await getUser(sisUserId);
   
   const userName = user.body.login_id.split("@")[0];
+  const userId = user.body.id;
 
-  log.info(userName);
-  // // Post call to api for create course with [name],[course_code],
   const schoolAccountId = await getSchoolAccountId(school);
   const sandboxAccountId = await getSandboxAccountId(schoolAccountId, school);
-
   const course = await createCourse(userName, sandboxAccountId);
-  log.info(`Course "Sandbox ${userName}" created`);
-  // // /api/v1/accounts/:account_id{school}/courses
-  // // Post call to api for enroll user and teststudents
-  // await enrollUser(userId, userName, "TeacherEnrollment");
-  // log.info(`${userName} was enrolled as Teacher.`);
+  const courseId = course.body.id;
 
-  // for (const testStudent in testAccountIds){
-  //   await enrollUser(testStudent, userName, "StudentEnrollment");
-  // }
-  // log.info(`Test students have been enrolled.`)
-  // [userId], [type], [enrollment_state],
-  // url:POST|/api/v1/courses/:course_id/enrollments
+  await enrollUser(userId, courseId, "TeacherEnrollment");
+  log.info(`was enrolled as Teacher.`);
+
+  for (const testStudent of testAccountIds){
+    await enrollUser(testStudent, courseId, "StudentEnrollment");
+  }
+  log.info(`Test students have been enrolled.`)
+
 }
 

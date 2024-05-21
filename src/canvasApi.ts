@@ -39,7 +39,7 @@ async function getSandboxAccountId(schoolAccountId: string, school: string){
     const sandboxAccounts: accountType[] = resp.body;
     let sandboxAccountId: string ="";
     for (const account of sandboxAccounts){
-        if (account.name == `${school} Sandboxes`){
+        if (account.name == `${school} - Sandboxes`){
             sandboxAccountId = account.id;
             break;
         }
@@ -49,21 +49,20 @@ async function getSandboxAccountId(schoolAccountId: string, school: string){
 }
 
 async function createCourse(user_name: string, subAccountId: string){
-    const course = {
+    const courseInfo = {course :{
         name: `Sandbox ${user_name}`,
         course_code : `Sandbox ${user_name}`,
-    }
-    return await canvas.request(`accounts/${subAccountId}/courses`, "POST", course);
+    }}
+    return await canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
 }
 
-async function enrollUser(userId: string, userName: string, type: string){
-    const course_id = `Sandbox ${userName}` 
-    const user = {
-        "enrollment[userId]" : userId,
-        "enrollment[type]" : type,
-        "enrollment[enrollment_state]" : "active"
-    }
-    return await canvas.request(`courses/:${course_id}/enrollments`, "POST", user);
+async function enrollUser(userId: string, courseId: string, type: string){
+    const user = {enrollment : {
+        user_id : userId,
+        type : type,
+        enrollment_state : "active"
+    }}
+    return await canvas.request(`courses/${courseId}/enrollments`, "POST", user);
 }
 
 export {
