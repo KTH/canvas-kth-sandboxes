@@ -3,16 +3,11 @@ const { default: CanvasApi, minimalErrorHandler } = require("@kth/canvas-api");
 import log from "skog";
 
 const canvas = new CanvasApi(
-    process.env.CANVAS_API_URL,
+    process.env.CANVAS_API_URL + "api/v1/",
     process.env.CANVAS_API_KEY
 );
 
 canvas.errorHandler = minimalErrorHandler;
-
-type accountType = {
-    name: string,
-    id: string
-}
 
 async function getUser(userId:string) {
     try{
@@ -32,35 +27,6 @@ async function getRole(): Promise<Role[] | undefined>{
         // throw permission error
         return;
     }
-}
-// refactor to only an api call
-async function getSchoolAccountId(school:string) {
-    let schoolAccountId: string = "";
-    const res = canvas.get("course_creation_accounts");
-    const accounts: accountType[] = res.body;
-    for (const account of accounts){
-        if (account.name == school){
-            schoolAccountId = account.id;
-            break;
-        }
-    }
-
-    return schoolAccountId;
-}
-
-// refactor to only an api call
-async function getSandboxAccountId(schoolAccountId: string, school: string){
-    const resp = canvas.get(`accounts/${schoolAccountId}/sub_accounts`);
-    const sandboxAccounts: accountType[] = resp.body;
-    let sandboxAccountId: string ="";
-    for (const account of sandboxAccounts){
-        if (account.name == `${school} - Sandboxes`){
-            sandboxAccountId = account.id;
-            break;
-        }
-    }
-    
-    return sandboxAccountId;
 }
 
 async function createCourse(user_name: string, subAccountId: string){
@@ -88,6 +54,4 @@ export {
     getRole,
     createCourse,
     enrollUser,
-    getSchoolAccountId,
-    getSandboxAccountId
 }

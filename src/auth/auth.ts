@@ -47,7 +47,6 @@ router.get("/callback", async (req, res) => {
     const tokenSet = await client.oauthCallback(oauthRedirectUrl, req.query, {
         state: req.session.tmpState,
     });
-    log.info(tokenSet);
 
     req.session.tmpState = undefined;
     req.session.accessToken = tokenSet.access_token;

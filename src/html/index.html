@@ -4,17 +4,18 @@
 
     <body>
         <form action="/canvas-kth-sandboxes/create-sandbox" method="POST" >
-            <label for="userId">User ID</label><br>
-            <input type="text" id="userId" name="userId" value="User ID"><br>
+            <label for="userId">KTH ID</label><br>
+            <input type="text" id="userId" name="userId" placeholder="KTH ID"><br>
             <label for="school">School</label><br>
             <select id="school" name="school" value="-">
-                <option value="ABE">ABE</option>
-                <option value="EES">EES</option>
-                <option value="ECE">ECE</option>
-                <option value="VS">VS</option>
+                <option value="16">ABE</option>
+                <option value="41">EES</option>
+                <option value="50">THS</option>
+                <option value="66">VS</option>
+                <option value="12">SCI</option>
+                <option value="13">UF</option>
             </select><br>
             <input type="submit" value="Create Sandbox">
         </form>
-        
     </body>
 </html>
