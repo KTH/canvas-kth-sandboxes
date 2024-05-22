@@ -15,14 +15,24 @@ type accountType = {
 }
 
 async function getUser(userId:string) {
-
-    return await canvas.get(`users/sis_user_id:${userId}/profile`);
-
+    try{
+        return canvas.get(`users/sis_user_id:${userId}/profile`);
+    }catch{
+        // throw Not found Error and show Error page
+    }
 }
 
+async function getRole(){
+    try{
+    return canvas.get(`accounts/1/admins/self`);
+    }catch{
+        // throw permission error
+    }
+}
+// refactor to only an api call
 async function getSchoolAccountId(school:string) {
     let schoolAccountId: string = "";
-    const res = await canvas.get("course_creation_accounts");
+    const res = canvas.get("course_creation_accounts");
     const accounts: accountType[] = res.body;
     for (const account of accounts){
         if (account.name == school){
@@ -34,8 +44,9 @@ async function getSchoolAccountId(school:string) {
     return schoolAccountId;
 }
 
+// refactor to only an api call
 async function getSandboxAccountId(schoolAccountId: string, school: string){
-    const resp = await canvas.get(`accounts/${schoolAccountId}/sub_accounts`);
+    const resp = canvas.get(`accounts/${schoolAccountId}/sub_accounts`);
     const sandboxAccounts: accountType[] = resp.body;
     let sandboxAccountId: string ="";
     for (const account of sandboxAccounts){
@@ -49,11 +60,14 @@ async function getSandboxAccountId(schoolAccountId: string, school: string){
 }
 
 async function createCourse(user_name: string, subAccountId: string){
-    const courseInfo = {course :{
+    try{const courseInfo = {course :{
         name: `Sandbox ${user_name}`,
         course_code : `Sandbox ${user_name}`,
     }}
-    return await canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
+    return await canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);}
+    catch {
+
+    }
 }
 
 async function enrollUser(userId: string, courseId: string, type: string){
@@ -67,6 +81,7 @@ async function enrollUser(userId: string, courseId: string, type: string){
 
 export {
     getUser,
+    getRole,
     createCourse,
     enrollUser,
     getSchoolAccountId,
