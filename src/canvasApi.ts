@@ -3,7 +3,7 @@ const { default: CanvasApi, minimalErrorHandler } = require("@kth/canvas-api");
 
 const canvas = new CanvasApi(
     process.env.CANVAS_API_URL,
-    process.env.CANVAS_API_KEY
+    process.env.CANVAS_API_TOKEN
 );
 
 canvas.errorHandler = minimalErrorHandler;
