@@ -9,7 +9,7 @@ import authRouter from "./auth/auth";
 import router from "./server";
 import { SessionData } from "express-session";
 
-const testAccountIds: string[] = [
+const testAccountIds = [
   "97021",
   "97017",
   "97016",
@@ -17,6 +17,7 @@ const testAccountIds: string[] = [
   "97020",
   "97019",
 ];
+const SCHOOL_IDS = new Map([["ABE","1234"],["VS","1234"]]);
 
 router.use("/auth", authRouter);
 router.use("/public", homepage);
@@ -26,31 +27,32 @@ router.get("/public", (req, res) => {
 router.get("/_monitor", monitor);
 
 
-function homepage(req: Request, res: Response, next: Function){
- if(!checkAuth(req, res)){
-  res.status(403).json({message: "Permission denied"});
- }else{
- next();
- }
+async function homepage(req: Request, res: Response, next: Function){
+  if(!await checkAuth(req, res)){
+    res.status(403).json({message: "Permission denied, du saknar behörighet för den här appen."});
+  }else{
+    next();
+  }
 }
 
-function checkAuth(req: Request, res: Response){
-  if(req.session.accessToken == undefined){
+async function checkAuth(req: Request, res: Response){
+  if(!req.session.accessToken){
     log.error("User is not authenticated");
     res.redirect("/canvas-kth-sandboxes/auth");
   }else {
-    if(!checkAccess(req, res)){
+    if(!await checkAccess(req, res)){
       return false;
     }
   }
+  return true;
 }
 
 async function checkAccess(req: Request, res:Response){
   const role = await getRole();
-  if (role == undefined){
+  if (!role){
     return false;
   }
-  if (role.body[0].role_id != "18"){
+  if (!role.find(r => r.role_id = 18)){
      return false;
   }
   return true;
@@ -73,7 +75,13 @@ router.post("/create-sandbox", start);
 async function start(req: Request, res: Response): Promise<void> {
   const sisUserId = req.body.userId;
   const school = req.body.school.toUpperCase();
-  const adminId = req.session.userId;
+
+
+  const schoolId = SCHOOL_IDS.get(school);
+  if (!schoolId){
+    res.send("School does not have a Sandbox account");
+    return;
+  }
 
   const user = await getUser(sisUserId);
   if (!user){
@@ -84,9 +92,9 @@ async function start(req: Request, res: Response): Promise<void> {
   const userId = user.body.id;
 
 
-  const schoolAccountId = await getSchoolAccountId(school);
-  const sandboxAccountId = await getSandboxAccountId(schoolAccountId, school);
-  const course = await createCourse(userName, sandboxAccountId);
+  // const schoolAccountId = await getSchoolAccountId(school);
+  // const sandboxAccountId = await getSandboxAccountId(schoolAccountId, school);
+  const course = await createCourse(userName, schoolId);
   const courseId = course.body.id;
 
   await enrollUser(userId, courseId, "TeacherEnrollment");
@@ -97,19 +105,18 @@ async function start(req: Request, res: Response): Promise<void> {
 
   const htmlRes= `
   <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sandbox for Canvas@kth</title>
-</head>
-<body>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sandbox for Canvas@kth</title>
+    </head>
+    <body>
         <h1 id="message">Sandbox have been created for ${userName}</h1>
 
-</body>
-</html>
-`
-
+    </body>
+    </html>
+  `
 
   res.send(htmlRes);
 

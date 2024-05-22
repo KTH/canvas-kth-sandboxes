@@ -21,12 +21,16 @@ async function getUser(userId:string) {
         // throw Not found Error and show Error page
     }
 }
+interface Role {
+    role_id : number
+}
 
-async function getRole(){
+async function getRole(): Promise<Role[] | undefined>{
     try{
-    return canvas.get(`accounts/1/admins/self`);
+        return (await canvas.get(`accounts/1/admins/self`)).body;
     }catch{
         // throw permission error
+        return;
     }
 }
 // refactor to only an api call
