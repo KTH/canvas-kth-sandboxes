@@ -21,25 +21,23 @@ router.get("/_monitor", monitor);
 
 async function homepage(req: Request, res: Response, next: Function){
   if(!await checkAuth(req, res)){
+    res.redirect("/canvas-kth-sandboxes/auth");
+  }else if(!await checkPermission(req, res)){
     res.status(403).json({message: "Permission denied, du saknar behörighet för den här appen."});
   }else{
     next();
   }
 }
 
-async function checkAuth(req: Request, res: Response){
+async function checkAuth(req: Request, res: Response):Promise<boolean>{
   if(!req.session.accessToken){
-    log.error("User is not authenticated");
-    res.redirect("/canvas-kth-sandboxes/auth");
-  }else {
-    if(!await checkAccess(req, res)){
-      return false;
-    }
+    return false;
   }
+
   return true;
 }
 
-async function checkAccess(req: Request, res:Response){
+async function checkPermission(req: Request, res:Response){
   const role = await getRole();
   if (!role){
     return false;
