@@ -4,7 +4,7 @@ import log from "skog";
 
 const canvas = new CanvasApi(
     process.env.CANVAS_API_URL + "api/v1/",
-    process.env.CANVAS_API_KEY
+    process.env.CANVAS_API_TOKEN
 );
 
 canvas.errorHandler = minimalErrorHandler;
