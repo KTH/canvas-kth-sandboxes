@@ -1,17 +1,16 @@
 
-import "./config/start";
 import {createCourse, enrollUser, getUser, getRole} from "./canvasApi"
 import {Request, Response } from "express";
+import { Router} from "express";
 import log from "skog";
 import path from "path";
-import authRouter from "./auth/auth";
-import router from "./server";
+
 
 
 const TEST_ACCOUNT_IDS = ["97021", "97017", "97016", "97018", "97020", "97019"];
 
+const router = Router();
 
-router.use("/auth", authRouter);
 router.use("/public", homepage);
 router.get("/public", (req, res) => {
   res.sendFile(path.join(__dirname, '/html/index.html'));
@@ -33,12 +32,16 @@ async function checkAuth(req: Request, res: Response):Promise<boolean>{
   if(!req.session.accessToken){
     return false;
   }
-
   return true;
 }
 
 async function checkPermission(req: Request, res:Response){
-  const role = await getRole();
+
+  if (!req.session.accessToken){
+    return false;}
+
+  const role = await getRole(req.session.accessToken);
+  
   if (!role){
     return false;
   }
@@ -100,4 +103,6 @@ async function start(req: Request, res: Response): Promise<void> {
   res.send(htmlRes);
 
 }
+
+export default router;
 
