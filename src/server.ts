@@ -9,7 +9,6 @@ import router from "./router";
 
 const server = express();
 
-log.info("Sandbox app up and running");
 server.set("trust proxy", 1);
 server.use(express.urlencoded({extended: false}));
 server.use(
