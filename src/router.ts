@@ -54,7 +54,7 @@ async function checkPermission(req: Request, res:Response){
 
 async function monitor(req: Request, res: Response) {  
   try {
-    res.send("OK");
+    res.send("APPLICATION_STATUS: OK");
   } catch (error) {
     log.error("Error: something went wrong.");
     res.send("Application status: ERROR");
