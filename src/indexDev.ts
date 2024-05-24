@@ -10,4 +10,4 @@ let opts = {
   key: selfSigned.private,
   cert: selfSigned.cert
 };
-https.createServer(opts, server).listen(3000, () => {log.info("Sandbox app up and running")});
+https.createServer(opts, server).listen(process.env.PORT, () => {log.info("Sandbox app up and running")});

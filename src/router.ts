@@ -86,8 +86,8 @@ async function start(req: Request, res: Response): Promise<void> {
   }
 
   const htmlRes= `
-  <!DOCTYPE html>
-    <html lang="en">
+  <!DOCTYPE html>  
+  <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,7 +97,7 @@ async function start(req: Request, res: Response): Promise<void> {
         <h1 id="message">Sandbox have been created for ${userName}</h1>
         <p><a href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to Sandbox</a></p>
     </body>
-    </html>
+  </html>
   `
 
   res.send(htmlRes);
