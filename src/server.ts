@@ -1,27 +1,17 @@
 import "./env";
 import express from "express";
 import sessionMiddleware from "express-session";
-import { Router} from "express";
 import log from "skog";
-import selfsigned from "selfsigned";
-import https from "https";
 import session from "express-session";
+import authRouter from "./auth/auth";
+import router from "./router";
 
 
-const app = express();
-const port = 3000;
+const server = express();
 
-const selfSigned = selfsigned.generate([{name: 'commonName', value: 'kth.se' }], {days: 365});
-let opts = { 
-  key: selfSigned.private,
-  cert: selfSigned.cert
-};
-https.createServer(opts, app).listen(3000);
-
-log.info("Sandbox app up and running");
-app.set("trust proxy", 1);
-app.use(express.urlencoded({extended: false}));
-app.use(
+server.set("trust proxy", 1);
+server.use(express.urlencoded({extended: false}));
+server.use(
     sessionMiddleware({
       name: "canvas-kth-sandboxes.sid",
       proxy: true,
@@ -43,10 +33,9 @@ app.use(
       secret: process.env.SESSION_SECRET || "",
     })
   );
+server.use("/canvas-kth-sandboxes", router);
+server.use("/canvas-kth-sandboxes/auth", authRouter);
 
-const router = Router();
 
 
-app.use("/canvas-kth-sandboxes", router);
-
-export default router;
+export default server;

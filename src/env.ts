@@ -20,4 +20,5 @@ declare module "express-session" {
     userId: number;
   }
 }
+
 export {}

@@ -1,37 +1,52 @@
 /** Singleton object for Canvas API */
 const { default: CanvasApi, minimalErrorHandler } = require("@kth/canvas-api");
+import log from "skog";
 
 const canvas = new CanvasApi(
-    process.env.CANVAS_API_URL,
+    process.env.CANVAS_API_URL + "api/v1/",
     process.env.CANVAS_API_TOKEN
 );
+
+interface Role {
+    role_id : number
+}
 
 canvas.errorHandler = minimalErrorHandler;
 
 async function getUser(userId:string) {
-    return await canvas.get(`users/sis_user_id:${userId}`);
+    
+    return canvas.get(`users/sis_user_id:${userId}/profile`);
 }
 
-async function createCourse(user_name: string, school: string){
-    const course = {
-        "course[name]" : `Sandbox ${user_name}`,
-        "course[course_code]" : `Sandbox ${user_name}`,
-    }
-    return await canvas.request(`accounts/${school}-Sandbox/courses`, "POST", course);
+async function getRole(token:string): Promise<Role[] | undefined>{
+    const canvas = new CanvasApi(
+        process.env.CANVAS_API_URL + "api/v1/",
+        token
+    );
+
+    return (await canvas.get(`accounts/1/admins/self`)).body;
 }
 
-async function enrollUser(userId: string, userName: string, type: string){
-    const course_id = `Sandbox ${userName}` 
-    const user = {
-        "enrollment[userId]" : userId,
-        "enrollment[type]" : type,
-        "enrollment[enrollment_state]" : "active"
-    }
-    return await canvas.request(`courses/:${course_id}/enrollments`, "POST", user);
+async function createCourse(user_name: string, subAccountId: string){
+    const courseInfo = {course :{
+        name: `Sandbox ${user_name}`,
+        course_code : `Sandbox ${user_name}`,
+    }}
+    return canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
+}
+
+async function enrollUser(userId: string, courseId: string, type: string){
+    const user = {enrollment : {
+        user_id : userId,
+        type : type,
+        enrollment_state : "active"
+    }}
+    return canvas.request(`courses/${courseId}/enrollments`, "POST", user);
 }
 
 export {
     getUser,
+    getRole,
     createCourse,
-    enrollUser
+    enrollUser,
 }
