@@ -8,6 +8,7 @@ import path from "path";
 
 
 const TEST_ACCOUNT_IDS = ["97021", "97017", "97016", "97018", "97020", "97019"];
+const KTH_DEV_ID = 18;
 
 const router = Router();
 
@@ -45,7 +46,7 @@ async function checkPermission(req: Request, res:Response){
   if (!role){
     return false;
   }
-  if (!role.find(r => r.role_id = 18)){
+  if (!role.find(r => r.role_id = KTH_DEV_ID)){
      return false;
   }
   return true;
@@ -62,10 +63,10 @@ async function monitor(req: Request, res: Response) {
   }
 };
 
-router.post("/create-sandbox", start);
+router.post("/create-sandbox", createSandbox);
 
 
-async function start(req: Request, res: Response): Promise<void> {
+async function createSandbox(req: Request, res: Response): Promise<void> {
   const sisUserId = req.body.userId;
   const schoolId = req.body.school;
 

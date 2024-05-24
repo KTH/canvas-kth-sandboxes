@@ -7,16 +7,15 @@ const canvas = new CanvasApi(
     process.env.CANVAS_API_TOKEN
 );
 
-
+interface Role {
+    role_id : number
+}
 
 canvas.errorHandler = minimalErrorHandler;
 
 async function getUser(userId:string) {
     
     return canvas.get(`users/sis_user_id:${userId}/profile`);
-}
-interface Role {
-    role_id : number
 }
 
 async function getRole(token:string): Promise<Role[] | undefined>{
@@ -33,7 +32,7 @@ async function createCourse(user_name: string, subAccountId: string){
         name: `Sandbox ${user_name}`,
         course_code : `Sandbox ${user_name}`,
     }}
-    return await canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
+    return canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
 }
 
 async function enrollUser(userId: string, courseId: string, type: string){
@@ -42,7 +41,7 @@ async function enrollUser(userId: string, courseId: string, type: string){
         type : type,
         enrollment_state : "active"
     }}
-    return await canvas.request(`courses/${courseId}/enrollments`, "POST", user);
+    return canvas.request(`courses/${courseId}/enrollments`, "POST", user);
 }
 
 export {
