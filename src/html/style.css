@@ -1,6 +1,6 @@
 
 body{
-    background-image: url("/Users/sarah4/dev-kth/kth-sandbox/src/html/img/illustration.jpg");
+    background-image: url("./img/illustration.jpg");
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -80,7 +80,7 @@ select {
     right: 0;
     bottom: 0;
     pointer-events: none;
-    background: #004791 url("/Users/sarah4/dev-kth/kth-sandbox/src/html/img/download.svg") no-repeat center;
+    background: #004791 url("./html/img/download.svg") no-repeat center;
     display: inline-block;
     width: 30px;
     background-size: 1rem;

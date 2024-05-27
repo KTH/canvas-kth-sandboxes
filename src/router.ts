@@ -1,7 +1,6 @@
 
 import {createCourse, enrollUser, getUser, getRole} from "./canvasApi"
-import {Request, Response } from "express";
-import { Router} from "express";
+import {Request, Response , Router, static as staticMiddleWare} from "express";
 import log from "skog";
 import path from "path";
 
@@ -13,9 +12,7 @@ const KTH_DEV_ID = 18;
 const router = Router();
 
 router.use("/public", homepage);
-router.get("/public", (req, res) => {
-  res.sendFile(path.join(__dirname, '/html/index.html'));
-});
+router.use("/public", staticMiddleWare(path.join(__dirname, 'html')));
 router.get("/_monitor", monitor);
 
 
@@ -99,7 +96,14 @@ async function createSandbox(req: Request, res: Response): Promise<void> {
         <p><a href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to Sandbox</a></p>
     </body>
   </html>
-  `
+  <style>
+  body{
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 25px;
+    font-color: black;
+  }
+  </style>
+`
 
   res.send(htmlRes);
 
@@ -107,7 +111,6 @@ async function createSandbox(req: Request, res: Response): Promise<void> {
 
 export default router;
 
-// export for testing
 export {
   checkAuth,
   createSandbox
