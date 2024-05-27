@@ -50,3 +50,5 @@ export {
     createCourse,
     enrollUser,
 }
+
+export default canvas

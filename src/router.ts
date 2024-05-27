@@ -107,3 +107,8 @@ async function createSandbox(req: Request, res: Response): Promise<void> {
 
 export default router;
 
+// export for testing
+export {
+  checkAuth,
+  createSandbox
+}
