@@ -2,32 +2,32 @@
 const { default: CanvasApi, minimalErrorHandler } = require("@kth/canvas-api");
 import log from "skog";
 
-const canvas = new CanvasApi(
-    process.env.CANVAS_API_URL + "api/v1/",
-    process.env.CANVAS_API_TOKEN
-);
+function getCanvasApiConnection(token: string){
+    const canvas = new CanvasApi(
+        process.env.CANVAS_API_URL + "api/v1/",
+        token
+    );
+    canvas.errorHandler = minimalErrorHandler;
+    return canvas;
+}
 
 interface Role {
     role_id : number
 }
 
-canvas.errorHandler = minimalErrorHandler;
-
-async function getUser(userId:string) {
-    
+async function getUser(token:string, userId:string) {
+    const canvas = getCanvasApiConnection(token);
     return canvas.get(`users/sis_user_id:${userId}/profile`);
 }
 
 async function getRole(token:string): Promise<Role[] | undefined>{
-    const canvas = new CanvasApi(
-        process.env.CANVAS_API_URL + "api/v1/",
-        token
-    );
+    const canvas = getCanvasApiConnection(token);
 
     return (await canvas.get(`accounts/1/admins/self`)).body;
 }
 
-async function createCourse(user_name: string, subAccountId: string){
+async function createCourse(token:string, user_name: string, subAccountId: string){
+    const canvas = getCanvasApiConnection(token);
     const courseInfo = {course :{
         name: `Sandbox ${user_name}`,
         course_code : `Sandbox ${user_name}`,
@@ -35,7 +35,8 @@ async function createCourse(user_name: string, subAccountId: string){
     return canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
 }
 
-async function enrollUser(userId: string, courseId: string, type: string){
+async function enrollUser(token:string, userId: string, courseId: string, type: string){
+    const canvas = getCanvasApiConnection(token);
     const user = {enrollment : {
         user_id : userId,
         type : type,
@@ -51,4 +52,3 @@ export {
     enrollUser,
 }
 
-export default canvas

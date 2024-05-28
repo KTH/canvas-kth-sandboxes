@@ -66,23 +66,27 @@ router.post("/create-sandbox", createSandbox);
 async function createSandbox(req: Request, res: Response): Promise<void> {
   const sisUserId = req.body.userId;
   const schoolId = req.body.school;
+  if (!req.session.accessToken){
+    return;}
 
-  const user = await getUser(sisUserId);
+  const user = await getUser(req.session.accessToken, sisUserId);
   if (!user){
     res.send("SIS Id does not exist");
     return;
   }
   const userName = user.body.login_id.split("@")[0];
   const userId = user.body.id;
-  const course = await createCourse(userName, schoolId);
+  const course = await createCourse(req.session.accessToken, userName, schoolId);
+  log.info(`Course created for ${userName}.`);
   const courseId = course.body.id;
 
-  await enrollUser(userId, courseId, "TeacherEnrollment");
+  await enrollUser(req.session.accessToken, userId, courseId, "TeacherEnrollment");
 
   for (const testStudent of TEST_ACCOUNT_IDS){
-    await enrollUser(testStudent, courseId, "StudentEnrollment");
+    await enrollUser(req.session.accessToken, testStudent, courseId, "StudentEnrollment");
   }
-
+  log.info(`${userName} and teststudents have been enrolled.`);
+  
   const htmlRes= `
   <!DOCTYPE html>  
   <html lang="en">
