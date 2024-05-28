@@ -28,9 +28,6 @@ input{
     border: 1px solid #ccc;
     border-radius: 4px;
     appearance: none;
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px 8px;
     cursor: pointer;
     margin-bottom: 15px;
     
@@ -44,9 +41,6 @@ select {
     border: 1px solid #ccc;
     border-radius: 4px;
     appearance: none;
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px 8px;
     cursor: pointer;
 }
 .kth-button{
@@ -80,11 +74,11 @@ select {
     right: 0;
     bottom: 0;
     pointer-events: none;
-    background: #004791 url("./html/img/download.svg") no-repeat center;
+    background: #004791 url("./img/download.png") no-repeat center;
     display: inline-block;
     width: 30px;
     background-size: 1rem;
-    margin-right: 110px;
+    margin-right: 112px;
 
 }
 img{
