@@ -1,5 +1,6 @@
 /** Singleton object for Canvas API */
 const { default: CanvasApi, minimalErrorHandler } = require("@kth/canvas-api");
+import { CanvasApiError } from "@kth/canvas-api";
 import log from "skog";
 
 function getCanvasApiConnection(token: string){
@@ -16,8 +17,10 @@ interface Role {
 }
 
 async function getUser(token:string, userId:string) {
+
     const canvas = getCanvasApiConnection(token);
     return canvas.get(`users/sis_user_id:${userId}/profile`);
+
 }
 
 async function getRole(token:string): Promise<Role[] | undefined>{

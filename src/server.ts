@@ -1,10 +1,10 @@
 import "./env";
 import express from "express";
 import sessionMiddleware from "express-session";
-import log from "skog";
 import session from "express-session";
 import authRouter from "./auth/auth";
 import router from "./router";
+import { errorHandler } from "./error";
 
 
 const server = express();
@@ -33,7 +33,9 @@ server.use(
       secret: process.env.SESSION_SECRET || "",
     })
   );
+
 server.use("/canvas-kth-sandboxes", router);
+server.use("/canvas-kth-sandboxes",errorHandler);
 server.use("/canvas-kth-sandboxes/auth", authRouter);
 
 

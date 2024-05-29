@@ -60,7 +60,9 @@ async function monitor(req: Request, res: Response) {
   }
 };
 
-router.post("/create-sandbox", createSandbox);
+router.post("/create-sandbox", (req, res, next) =>
+createSandbox(req, res).catch(next)
+);
 
 
 async function createSandbox(req: Request, res: Response): Promise<void> {

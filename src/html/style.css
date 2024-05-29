@@ -74,7 +74,7 @@ select {
     right: 0;
     bottom: 0;
     pointer-events: none;
-    background: #004791 url("./img/download.png") no-repeat center;
+    background: #004791 url("./img/down-arrow.png") no-repeat center;
     display: inline-block;
     width: 30px;
     background-size: 1rem;
