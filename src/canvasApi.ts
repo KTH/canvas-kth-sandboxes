@@ -1,7 +1,6 @@
 /** Singleton object for Canvas API */
 const { default: CanvasApi, minimalErrorHandler } = require("@kth/canvas-api");
-import { CanvasApiError } from "@kth/canvas-api";
-import log from "skog";
+
 
 function getCanvasApiConnection(token: string){
     const canvas = new CanvasApi(

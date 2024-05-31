@@ -10,7 +10,7 @@ const TEST_ACCOUNT_IDS = ["97021", "97017", "97016", "97018", "97020", "97019"];
 const KTH_DEV_ID = 18;
 
 const router = Router();
-
+router.get("/", (req: Request, res:Response ) => {res.redirect("/canvas-kth-sandboxes/public")});
 router.use("/public", homepage);
 router.use("/public", staticMiddleWare(path.join(__dirname, 'html')));
 router.get("/_monitor", monitor);
@@ -62,13 +62,13 @@ async function monitor(req: Request, res: Response) {
 };
 
 router.post("/create-sandbox", async (req, res, next) =>{
-    const sisUserId = req.body.userId;
+    const userName = req.body.userId;
     const schoolId = req.body.school;
     const accessToken = req.session.accessToken;
     if (!accessToken) {
       return;
     }
-    const response = await createSandbox(sisUserId, schoolId, accessToken).catch(next);
+    const response = await createSandbox(userName, schoolId, accessToken).catch(next);
     // errorHandler returns undefined when error occurs.
     if(response){
     res.send(response);
