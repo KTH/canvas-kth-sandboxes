@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Testing Router CreateSandbox, input res and req output html 1`] = `
+exports[`Testing logic for creating sandboxes CreateSandbox, input res and req output html 1`] = `
 {
   "accounts/school_id/courses": {
     "course": {
@@ -18,7 +18,7 @@ exports[`Testing Router CreateSandbox, input res and req output html 1`] = `
 }
 `;
 
-exports[`Testing Router CreateSandbox, input res and req output html 2`] = `
+exports[`Testing logic for creating sandboxes CreateSandbox, input res and req output html 2`] = `
 "
   <!DOCTYPE html>  
   <html lang="en">

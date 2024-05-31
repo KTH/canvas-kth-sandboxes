@@ -19,7 +19,7 @@ interface Role {
 async function getUser(token:string, userId:string) {
 
     const canvas = getCanvasApiConnection(token);
-    return canvas.get(`users/sis_user_id:${userId}/profile`);
+    return canvas.get(`users/sis_login_id:${userId}/profile`);
 
 }
 
@@ -29,11 +29,11 @@ async function getRole(token:string): Promise<Role[] | undefined>{
     return (await canvas.get(`accounts/1/admins/self`)).body;
 }
 
-async function createCourse(token:string, user_name: string, subAccountId: string){
+async function createCourse(token:string, userName: string, subAccountId: string){
     const canvas = getCanvasApiConnection(token);
     const courseInfo = {course :{
-        name: `Sandbox ${user_name}`,
-        course_code : `Sandbox ${user_name}`,
+        name: `Sandbox ${userName}`,
+        course_code : `Sandbox ${userName}`,
     }}
     return canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
 }

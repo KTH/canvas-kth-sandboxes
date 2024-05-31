@@ -77,15 +77,15 @@ router.post("/create-sandbox", async (req, res, next) =>{
 );
 
 
-async function createSandbox(sisUserId: string, schoolId:string, accessToken:string ): Promise<any> {
+async function createSandbox(userName: string, schoolId:string, accessToken:string ): Promise<any> {
 
+  if (!userName.includes("@"))
+    userName = userName + "@kth.se";
+  
+  const user = await getUser(accessToken, userName);
 
-  const user = await getUser(accessToken, sisUserId);
-  if (!user) {
-    return "SIS Id does not exist";
-  }
-  const userName = user.body.login_id.split("@")[0];
   const userId = user.body.id;
+  userName = userName.split("@")[0];
   const course = await createCourse(accessToken, userName, schoolId);
   log.info(`Course created for ${userName}.`);
   const courseId = course.body.id;
@@ -108,6 +108,7 @@ async function createSandbox(sisUserId: string, schoolId:string, accessToken:str
     <body>
         <h1 id="message">Sandbox have been created for ${userName}</h1>
         <p><a href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to Sandbox</a></p>
+        <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Create another sandbox? click here </a></p>
     </body>
   </html>
   <style>
