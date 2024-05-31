@@ -1,29 +1,28 @@
-import {createSandbox, checkAuth} from "../router";
-import mockCanvasApi from "../canvasApi";
-import { getMockReq, getMockRes } from "@jest-mock/express";
+import { describe, test } from "@jest/globals";
+import { CanvasApiMock } from "./__mocks__/@kth/canvas-api";
+import { createSandbox} from "../router";
 
-jest.mock('./canvasApi');
-const mockValue = {body : {
-    id:"1234",
-    login_id: "id@kth.se"
-}}
-mockCanvasApi.get.mockImplementation(() => Promise.resolve(mockValue));
+CanvasApiMock.get("users/sis_user_id:1234/profile", { body: { login_id: "get_user_id@kth", id: "get_user_id" } });
+CanvasApiMock.request("accounts/school_id/courses", "POST", { body: { id: "course_id" } });
+for (let i = 0; i < 7; i++) {
+  CanvasApiMock.request(`courses/user_id_${i}/enrollments`, "POST", { body: undefined });
+}
+
 
 describe("Testing Router", () => {
 
-    const {res} = getMockRes();
+
+  test("testsuite works", () => { });
 
 
+  test("CreateSandbox, input res and req output html", async () => {
+    const accessToken = "access_token";
+    const userId = "1234";
+    const schoolId = "school_id";
+    const response = await createSandbox(userId, schoolId, accessToken);
+    expect(CanvasApiMock.result()).toMatchSnapshot();
+    expect(response).toMatchSnapshot();
 
-test("testsuite works", () => {});
 
-// test("test check auth", () => {
-
-//     const req = {session : {accessToken : ""}} as Request;
-//     expect(checkAuth(req, res))
-// })
-
-test("input res and req output html", () => {
-    expect(createSandbox(getMockReq({path: "https:///public", method: "get"}), res)).toBe(String)
-})
+  });
 });

@@ -1,6 +1,6 @@
 
-import {createCourse, enrollUser, getUser, getRole} from "./canvasApi"
-import {Request, Response , Router, static as staticMiddleWare} from "express";
+import { createCourse, enrollUser, getUser, getRole } from "./canvasApi"
+import { Request, Response, Router, static as staticMiddleWare } from "express";
 import log from "skog";
 import path from "path";
 
@@ -16,80 +16,88 @@ router.use("/public", staticMiddleWare(path.join(__dirname, 'html')));
 router.get("/_monitor", monitor);
 
 
-async function homepage(req: Request, res: Response, next: Function){
-  if(!await checkAuth(req, res)){
+async function homepage(req: Request, res: Response, next: Function) {
+  if (!await checkAuth(req, res)) {
     res.redirect("/canvas-kth-sandboxes/auth");
-  }else if(!await checkPermission(req, res)){
-    res.status(403).json({message: "Permission denied, du saknar behörighet för den här appen."});
-  }else{
+  } else if (!await checkPermission(req, res)) {
+    res.status(403).json({ message: "Permission denied, du saknar behörighet för den här appen." });
+  } else {
     next();
   }
 }
 
-async function checkAuth(req: Request, res: Response):Promise<boolean>{
-  if(!req.session.accessToken){
+async function checkAuth(req: Request, res: Response): Promise<boolean> {
+  if (!req.session.accessToken) {
     return false;
   }
   return true;
 }
 
-async function checkPermission(req: Request, res:Response){
+async function checkPermission(req: Request, res: Response) {
 
-  if (!req.session.accessToken){
-    return false;}
+  if (!req.session.accessToken) {
+    return false;
+  }
 
   const role = await getRole(req.session.accessToken);
-  
-  if (!role){
+
+  if (!role) {
     return false;
   }
-  if (!role.find(r => r.role_id = KTH_DEV_ID)){
-     return false;
+  if (!role.find(r => r.role_id = KTH_DEV_ID)) {
+    return false;
   }
   return true;
 }
 
 
-async function monitor(req: Request, res: Response) {  
+async function monitor(req: Request, res: Response) {
   try {
     res.send("APPLICATION_STATUS: OK");
   } catch (error) {
     log.error("Error: something went wrong.");
     res.send("Application status: ERROR");
-    
+
   }
 };
 
-router.post("/create-sandbox", (req, res, next) =>
-createSandbox(req, res).catch(next)
+router.post("/create-sandbox", async (req, res, next) =>{
+    const sisUserId = req.body.userId;
+    const schoolId = req.body.school;
+    const accessToken = req.session.accessToken;
+    if (!accessToken) {
+      return;
+    }
+    const response = await createSandbox(sisUserId, schoolId, accessToken).catch(next);
+    // errorHandler returns undefined when error occurs.
+    if(response){
+    res.send(response);
+    }
+  }
 );
 
 
-async function createSandbox(req: Request, res: Response): Promise<void> {
-  const sisUserId = req.body.userId;
-  const schoolId = req.body.school;
-  if (!req.session.accessToken){
-    return;}
+async function createSandbox(sisUserId: string, schoolId:string, accessToken:string ): Promise<any> {
 
-  const user = await getUser(req.session.accessToken, sisUserId);
-  if (!user){
-    res.send("SIS Id does not exist");
-    return;
+
+  const user = await getUser(accessToken, sisUserId);
+  if (!user) {
+    return "SIS Id does not exist";
   }
   const userName = user.body.login_id.split("@")[0];
   const userId = user.body.id;
-  const course = await createCourse(req.session.accessToken, userName, schoolId);
+  const course = await createCourse(accessToken, userName, schoolId);
   log.info(`Course created for ${userName}.`);
   const courseId = course.body.id;
 
-  await enrollUser(req.session.accessToken, userId, courseId, "TeacherEnrollment");
+  await enrollUser(accessToken, userId, courseId, "TeacherEnrollment");
 
-  for (const testStudent of TEST_ACCOUNT_IDS){
-    await enrollUser(req.session.accessToken, testStudent, courseId, "StudentEnrollment");
+  for (const testStudent of TEST_ACCOUNT_IDS) {
+    await enrollUser(accessToken, testStudent, courseId, "StudentEnrollment");
   }
   log.info(`${userName} and teststudents have been enrolled.`);
-  
-  const htmlRes= `
+
+  const htmlRes = `
   <!DOCTYPE html>  
   <html lang="en">
     <head>
@@ -111,7 +119,7 @@ async function createSandbox(req: Request, res: Response): Promise<void> {
   </style>
 `
 
-  res.send(htmlRes);
+  return htmlRes;
 
 }
 

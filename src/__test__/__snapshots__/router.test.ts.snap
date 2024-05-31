@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing Router CreateSandbox, input res and req output html 1`] = `
+{
+  "accounts/school_id/courses": {
+    "course": {
+      "course_code": "Sandbox get_user_id",
+      "name": "Sandbox get_user_id",
+    },
+  },
+  "courses/course_id/enrollments": {
+    "enrollment": {
+      "enrollment_state": "active",
+      "type": "StudentEnrollment",
+      "user_id": "97019",
+    },
+  },
+}
+`;
+
+exports[`Testing Router CreateSandbox, input res and req output html 2`] = `
+"
+  <!DOCTYPE html>  
+  <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sandbox for Canvas@kth</title>
+    </head>
+    <body>
+        <h1 id="message">Sandbox have been created for get_user_id</h1>
+        <p><a href="undefinedcourses/course_id">URL to Sandbox</a></p>
+    </body>
+  </html>
+  <style>
+  body{
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 25px;
+    font-color: black;
+  }
+  </style>
+"
+`;
