@@ -107,7 +107,7 @@ async function createSandbox(userName: string, schoolId:string, accessToken:stri
     </head>
     <body>
         <h1 id="message">Sandbox have been created for ${userName}</h1>
-        <p><a href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to Sandbox</a></p>
+        <p><a target="_blank" href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to Sandbox (opens in new tab) </a></p>
         <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Create another sandbox? click here </a></p>
     </body>
   </html>
