@@ -25,8 +25,7 @@ async function homepage(req: Request, res: Response, next: Function) {
     res.redirect("/canvas-kth-sandboxes/auth");
   } else if (!(await checkPermission(req, res))) {
     res
-      .status(403)
-      .json({
+      .status(403).json({
         message: "Permission denied, du saknar behörighet för den här appen.",
       });
   } else {
