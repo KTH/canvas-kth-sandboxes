@@ -41,7 +41,7 @@ export function errorHandler(
   req: Request,
   res: Response<ApiError>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _next: NextFunction
+  _next: NextFunction,
 ) {
   if (err instanceof CanvasApiError) {
     if (err.code === 401) {
@@ -89,6 +89,4 @@ export function errorHandler(
     code: "internal_error",
     message: "Internal error",
   });
-
 }
- 
