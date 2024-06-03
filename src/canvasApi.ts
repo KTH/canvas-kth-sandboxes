@@ -23,9 +23,16 @@ async function getUser(token:string, userId:string) {
 }
 
 async function getRole(token:string): Promise<Role[] | undefined>{
-    const canvas = getCanvasApiConnection(token);
 
+    const canvas = getCanvasApiConnection(token);
     return (await canvas.get(`accounts/1/admins/self`)).body;
+}
+
+async function getCoursesForUser(token: string, userId: string) {
+
+    const canvas = getCanvasApiConnection(token);
+    return (await canvas.get(`users/${userId}/courses`)).body;
+
 }
 
 async function createCourse(token:string, userName: string, subAccountId: string){
@@ -37,13 +44,15 @@ async function createCourse(token:string, userName: string, subAccountId: string
     return canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
 }
 
-async function enrollUser(token:string, userId: string, courseId: string, type: string){
+async function enrollUser(token:string, userId: string, courseId: string, role: string){
+
     const canvas = getCanvasApiConnection(token);
-    const user = {enrollment : {
+    let user = { enrollment: {
         user_id : userId,
-        type : type,
-        enrollment_state : "active"
+        role_id : role,
+        enrollment_state : "active",
     }}
+
     return canvas.request(`courses/${courseId}/enrollments`, "POST", user);
 }
 
@@ -52,5 +61,6 @@ export {
     getRole,
     createCourse,
     enrollUser,
+    getCoursesForUser
 }
 
