@@ -101,7 +101,9 @@ async function createSandbox(
   };
 
   // Kolla om det finns en sandbox för andvändaren och under samma konto
-  const userCourses = await (await getCoursesForUser(accessToken, userId)).toArray();
+  // TODO: check if this syntax is needed or if we should take a look at canvasapi
+  const userCoursesList = await getCoursesForUser(accessToken, userId);
+  const userCourses = await userCoursesList.toArray();
   if (
     userCourses.find(
       (course: courseInfo) =>
