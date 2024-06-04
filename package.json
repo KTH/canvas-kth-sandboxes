@@ -2,10 +2,9 @@
   "name": "kth-sandbox",
   "version": "0.1.0",
   "description": "Application to create sandbox courserooms in Canvas",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "dependencies": {
     "@kth/canvas-api": "^4.2.2",
-    "@types/got": "^9.6.12",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
@@ -13,7 +12,6 @@
     "got": "^14.3.0",
     "https": "^1.0.0",
     "openid-client": "^5.6.5",
-    "save-dev": "^0.0.1-security",
     "selfsigned": "^2.4.1",
     "skog": "^3.0.2",
     "ts-node": "^10.9.2"

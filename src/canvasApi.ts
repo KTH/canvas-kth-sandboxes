@@ -10,6 +10,10 @@ function getCanvasApiConnection(token: string) {
 interface Role {
   role_id: number;
 }
+interface CourseInfo {
+    name: string,
+    account_id, string
+}
 
 async function getUser(token: string, userId: string) {
   const canvas = getCanvasApiConnection(token);
@@ -21,7 +25,7 @@ async function getRole(token: string): Promise<Role[] | undefined> {
   return (await canvas.get(`accounts/1/admins/self`)).body;
 }
 
-async function getCoursesForUser(token: string, userId: string) {
+async function getCoursesForUser(token: string, userId: string): Promise<Iterable<> {
   const canvas = getCanvasApiConnection(token);
   return canvas.listItems(`users/${userId}/courses`);
 }
