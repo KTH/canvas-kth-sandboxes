@@ -27,10 +27,9 @@ async function homepage(req: Request, res: Response, next: Function) {
   if (!(await checkAuth(req, res))) {
     res.redirect("/canvas-kth-sandboxes/auth");
   } else if (!(await checkPermission(req, res))) {
-    res
-      .status(403).json({
-        message: "Permission denied, du saknar behörighet för den här appen.",
-      });
+    res.status(403).json({
+      message: "Permission denied, du saknar behörighet för den här appen.",
+    });
   } else {
     next();
   }
@@ -101,7 +100,6 @@ async function createSandbox(
   };
 
   // Kolla om det finns en sandbox för andvändaren och under samma konto
-  // TODO: check if this syntax is needed or if we should take a look at canvasapi
   const userCoursesList = await getCoursesForUser(accessToken, userId);
   const userCourses = await userCoursesList.toArray();
   if (
