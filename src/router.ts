@@ -11,6 +11,9 @@ import path from "path";
 
 const TEST_ACCOUNT_IDS = ["97021", "97017", "97016", "97018", "97020", "97019"];
 const KTH_DEV_ID = 18;
+const COURSE_CORDINATOR = "9";
+const TEACHER = "4";
+const STUDENT = "3";
 
 const router = Router();
 router.get("/", (req: Request, res: Response) => {
@@ -113,11 +116,11 @@ async function createSandbox(
 
   // Lägg till användaren som både lärare och kursansvarig
   const courseId = course.body.id;
-  await enrollUser(accessToken, userId, courseId, "9");
-  await enrollUser(accessToken, userId, courseId, "4");
+  await enrollUser(accessToken, userId, courseId, COURSE_CORDINATOR);
+  await enrollUser(accessToken, userId, courseId, TEACHER);
 
   for (const testStudent of TEST_ACCOUNT_IDS) {
-    await enrollUser(accessToken, testStudent, courseId, "3");
+    await enrollUser(accessToken, testStudent, courseId, STUDENT);
   }
   log.info(`${userName} and teststudents have been enrolled.`);
 

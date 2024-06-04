@@ -23,7 +23,7 @@ async function getRole(token: string): Promise<Role[] | undefined> {
 
 async function getCoursesForUser(token: string, userId: string) {
   const canvas = getCanvasApiConnection(token);
-  return (await canvas.get(`users/${userId}/courses?per_page=100`)).body;
+  return canvas.listItems(`users/${userId}/courses`);
 }
 
 async function createCourse(

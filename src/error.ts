@@ -1,5 +1,6 @@
 import { CanvasApiError } from "@kth/canvas-api";
 import { Request, Response, NextFunction } from "express";
+import log from "skog";
 
 export interface ApiError<Codes = string> {
   code: Codes;
@@ -85,6 +86,7 @@ export function errorHandler(
     });
   }
 
+  log.warn(err as Error, "Internal server Error");
   res.status(500).json({
     code: "internal_error",
     message: "Internal error",
