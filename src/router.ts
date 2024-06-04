@@ -101,7 +101,7 @@ async function createSandbox(
   };
 
   // Kolla om det finns en sandbox för andvändaren och under samma konto
-  const userCourses = await getCoursesForUser(accessToken, userId);
+  const userCourses = await (await getCoursesForUser(accessToken, userId)).toArray();
   if (
     userCourses.find(
       (course: courseInfo) =>
