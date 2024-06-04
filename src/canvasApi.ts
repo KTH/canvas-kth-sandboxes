@@ -12,7 +12,7 @@ interface Role {
 }
 interface CourseInfo {
     name: string,
-    account_id, string
+    account_id: string
 }
 
 async function getUser(token: string, userId: string) {
@@ -25,7 +25,7 @@ async function getRole(token: string): Promise<Role[] | undefined> {
   return (await canvas.get(`accounts/1/admins/self`)).body;
 }
 
-async function getCoursesForUser(token: string, userId: string): Promise<Iterable<> {
+async function getCoursesForUser(token: string, userId: string) {
   const canvas = getCanvasApiConnection(token);
   return canvas.listItems(`users/${userId}/courses`);
 }

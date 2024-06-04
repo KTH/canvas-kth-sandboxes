@@ -124,6 +124,8 @@ async function createSandbox(
   }
   log.info(`${userName} and teststudents have been enrolled.`);
 
+
+  // return html code to add variable in the message, use a framework to make prettier.
   const htmlRes = `
   <!DOCTYPE html>  
   <html lang="en">
