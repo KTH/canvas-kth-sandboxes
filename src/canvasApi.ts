@@ -6,6 +6,9 @@ function getCanvasApiConnection(token: string) {
   canvas.errorHandler = minimalErrorHandler;
   return canvas;
 }
+interface RoleGenerator extends Generator<CourseInfo>{
+    toArray: () => CourseInfo[];
+}
 
 interface Role {
   role_id: number;
@@ -22,10 +25,10 @@ async function getUser(token: string, userId: string) {
 
 async function getRole(token: string): Promise<Role[] | undefined> {
   const canvas = getCanvasApiConnection(token);
-  return (await canvas.get(`accounts/1/admins/self`)).body;
+  return await canvas.get(`accounts/1/admins/self`);
 }
 
-async function getCoursesForUser(token: string, userId: string) {
+async function getCoursesForUser(token: string, userId: string): Promise<RoleGenerator> {
   const canvas = getCanvasApiConnection(token);
   return canvas.listItems(`users/${userId}/courses`);
 }

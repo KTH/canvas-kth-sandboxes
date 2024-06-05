@@ -83,11 +83,8 @@ router.post("/create-sandbox", async (req, res, next) => {
   }
 });
 
-async function createSandbox(
-  userName: string,
-  schoolId: string,
-  accessToken: string,
-): Promise<any> {
+async function createSandbox( userName: string, schoolId: string, accessToken: string,): Promise<any> {
+
   if (!userName.includes("@")) userName = userName + "@kth.se";
 
   const user = await getUser(accessToken, userName);
