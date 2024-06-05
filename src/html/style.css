@@ -1,0 +1,81 @@
+body {
+  background-image: url("./img/illustration.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+}
+.form-container {
+  background-color: white;
+  width: 300px;
+  height: 250px;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.55);
+}
+input {
+  padding: 10px;
+  font-size: 16px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  appearance: none;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+select {
+  width: 60%;
+  padding: 10px;
+  font-size: 16px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  appearance: none;
+  cursor: pointer;
+}
+.kth-button {
+  display: inline-flex;
+  padding: 0.5rem 1rem;
+  justify-content: center;
+  align-items: center;
+  border: unset;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  text-decoration: none;
+  background: #004791;
+  color: white;
+  margin-top: 20px;
+}
+.wrapper {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 0.25em;
+  font-size: 0.875rem;
+}
+.wrapper::after {
+  content: "";
+  color: #fff;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: #004791 url("./img/down-arrow.png") no-repeat center;
+  display: inline-block;
+  width: 30px;
+  background-size: 1rem;
+  margin-right: 112px;
+}
+img {
+  margin-bottom: 10px;
+}

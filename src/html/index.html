@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html>
+  <head>
     <title>Sandbox for Canvas@kth</title>
-
-    <body>
-        <form action="/canvas-kth-sandboxes/create-sandbox" method="POST" >
-            <label for="userId">KTH ID</label><br>
-            <input type="text" id="userId" name="userId" placeholder="KTH ID"><br>
-            <label for="school">School</label><br>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-container">
+        <img src="./img/logo.png" alt="KTH logo" width="50" height="50" />
+        <form action="/canvas-kth-sandboxes/create-sandbox" method="POST">
+          <label for="userId">KTH Username</label><br />
+          <input
+            type="text"
+            id="userId"
+            name="userId"
+            placeholder="user@kth.se"
+          /><br />
+          <label class="school-label" for="school">School Sandbox Account</label
+          ><br />
+          <div class="wrapper">
             <select id="school" name="school" value="-">
-                <option value="16">ABE</option>
-                <option value="41">EES</option>
-                <option value="50">THS</option>
-                <option value="66">VS</option>
-                <option value="12">SCI</option>
-                <option value="13">UF</option>
-            </select><br>
-            <input type="submit" value="Create Sandbox">
+              <option value="16">ABE - Sandboxes</option>
+              <option value="61">EECS - Sandboxes</option>
+              <option value="43">ITM - Sandboxes</option>
+              <option value="69">VS - Sandboxes</option>
+              <option value="44">SCI - Sandboxes</option>
+              <option value="65">CBH - Sandboxes</option></select
+            ><br />
+          </div>
+          <input class="kth-button" type="submit" value="Create Sandbox" />
         </form>
-    </body>
+      </div>
+    </div>
+  </body>
 </html>

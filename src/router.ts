@@ -1,92 +1,129 @@
-
-import {createCourse, enrollUser, getUser, getRole} from "./canvasApi"
-import {Request, Response } from "express";
-import { Router} from "express";
+import {
+  createCourse,
+  enrollUser,
+  getUser,
+  getRole,
+  getCoursesForUser,
+} from "./canvasApi";
+import { Request, Response, Router, static as staticMiddleWare } from "express";
 import log from "skog";
 import path from "path";
 
-
-
 const TEST_ACCOUNT_IDS = ["97021", "97017", "97016", "97018", "97020", "97019"];
 const KTH_DEV_ID = 18;
+const COURSE_CORDINATOR = "9";
+const TEACHER = "4";
+const STUDENT = "3";
 
 const router = Router();
-
-router.use("/public", homepage);
-router.get("/public", (req, res) => {
-  res.sendFile(path.join(__dirname, '/html/index.html'));
+router.get("/", (req: Request, res: Response) => {
+  res.redirect("/canvas-kth-sandboxes/public");
 });
+router.use("/public", homepage);
+router.use("/public", staticMiddleWare(path.join(__dirname, "html")));
 router.get("/_monitor", monitor);
 
-
-async function homepage(req: Request, res: Response, next: Function){
-  if(!await checkAuth(req, res)){
+async function homepage(req: Request, res: Response, next: Function) {
+  if (!(await checkAuth(req, res))) {
     res.redirect("/canvas-kth-sandboxes/auth");
-  }else if(!await checkPermission(req, res)){
-    res.status(403).json({message: "Permission denied, du saknar behörighet för den här appen."});
-  }else{
+  } else if (!(await checkPermission(req, res))) {
+    res.status(403).json({
+      message: "Permission denied, du saknar behörighet för den här appen.",
+    });
+  } else {
     next();
   }
 }
 
-async function checkAuth(req: Request, res: Response):Promise<boolean>{
-  if(!req.session.accessToken){
+async function checkAuth(req: Request, res: Response): Promise<boolean> {
+  if (!req.session.accessToken) {
     return false;
   }
   return true;
 }
 
-async function checkPermission(req: Request, res:Response){
-
-  if (!req.session.accessToken){
-    return false;}
+async function checkPermission(req: Request, res: Response) {
+  if (!req.session.accessToken) {
+    return false;
+  }
 
   const role = await getRole(req.session.accessToken);
-  
-  if (!role){
+
+  if (!role) {
     return false;
   }
-  if (!role.find(r => r.role_id = KTH_DEV_ID)){
-     return false;
+  if (!role.find((r) => (r.role_id = KTH_DEV_ID))) {
+    return false;
   }
   return true;
 }
 
-
-async function monitor(req: Request, res: Response) {  
+async function monitor(req: Request, res: Response) {
   try {
     res.send("APPLICATION_STATUS: OK");
   } catch (error) {
     log.error("Error: something went wrong.");
     res.send("Application status: ERROR");
-    
   }
-};
+}
 
-router.post("/create-sandbox", createSandbox);
-
-
-async function createSandbox(req: Request, res: Response): Promise<void> {
-  const sisUserId = req.body.userId;
+router.post("/create-sandbox", async (req, res, next) => {
+  const userName = req.body.userId;
   const schoolId = req.body.school;
-
-  const user = await getUser(sisUserId);
-  if (!user){
-    res.send("SIS Id does not exist");
+  const accessToken = req.session.accessToken;
+  if (!accessToken) {
     return;
   }
-  const userName = user.body.login_id.split("@")[0];
+  const response = await createSandbox(userName, schoolId, accessToken).catch(
+    next,
+  );
+  // errorHandler returns undefined when error occurs.
+  if (response) {
+    res.send(response);
+  }
+});
+
+async function createSandbox( userName: string, schoolId: string, accessToken: string,): Promise<any> {
+
+  if (!userName.includes("@")) userName = userName + "@kth.se";
+
+  const user = await getUser(accessToken, userName);
   const userId = user.body.id;
-  const course = await createCourse(userName, schoolId);
-  const courseId = course.body.id;
+  userName = userName.split("@")[0];
 
-  await enrollUser(userId, courseId, "TeacherEnrollment");
+  type courseInfo = {
+    name: string;
+    account_id: string;
+  };
 
-  for (const testStudent of TEST_ACCOUNT_IDS){
-    await enrollUser(testStudent, courseId, "StudentEnrollment");
+  // Kolla om det finns en sandbox för andvändaren och under samma konto
+  const userCoursesList = await getCoursesForUser(accessToken, userId);
+  const userCourses = await userCoursesList.toArray();
+  if (
+    userCourses.find(
+      (course: courseInfo) =>
+        course.name === `Sandbox ${userName}` && course.account_id == schoolId,
+    )
+  ) {
+    return `There is already a course for ${userName}`;
   }
 
-  const htmlRes= `
+  const course = await createCourse(accessToken, userName, schoolId);
+  log.info(`Course created for ${userName}.`);
+
+  // Lägg till användaren som både lärare och kursansvarig
+  const courseId = course.body.id;
+  await enrollUser(accessToken, userId, courseId, COURSE_CORDINATOR);
+  await enrollUser(accessToken, userId, courseId, TEACHER);
+
+  for (const testStudent of TEST_ACCOUNT_IDS) {
+    await enrollUser(accessToken, testStudent, courseId, STUDENT);
+  }
+  log.info(`${userName} and teststudents have been enrolled.`);
+
+
+  // return html code to add variable in the message, use a framework to make prettier.
+  const htmlRes = `
   <!DOCTYPE html>  
   <html lang="en">
     <head>
@@ -96,14 +133,22 @@ async function createSandbox(req: Request, res: Response): Promise<void> {
     </head>
     <body>
         <h1 id="message">Sandbox have been created for ${userName}</h1>
-        <p><a href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to Sandbox</a></p>
+        <p><a target="_blank" href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to Sandbox (opens in new tab) </a></p>
+        <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Create another sandbox? click here </a></p>
     </body>
   </html>
-  `
+  <style>
+  body{
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 25px;
+    font-color: black;
+  }
+  </style>
+`;
 
-  res.send(htmlRes);
-
+  return htmlRes;
 }
 
 export default router;
 
+export { checkAuth, createSandbox };

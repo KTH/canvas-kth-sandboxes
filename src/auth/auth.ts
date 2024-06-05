@@ -7,18 +7,18 @@ import log from "skog";
 // https://localdev.kth.se:4443/canvas-kth-sandboxes/auth
 const oauthRedirectUrl = new URL(
   "/canvas-kth-sandboxes/auth/callback",
-  process.env.PROXY_HOST
+  process.env.PROXY_HOST,
 ).toString();
 
 const issuer = new Issuer({
   issuer: "se.kth",
   authorization_endpoint: new URL(
     "/login/oauth2/auth",
-    process.env.CANVAS_API_URL
+    process.env.CANVAS_API_URL,
   ).toString(),
   token_endpoint: new URL(
     "/login/oauth2/token",
-    process.env.CANVAS_API_URL
+    process.env.CANVAS_API_URL,
   ).toString(),
 });
 
@@ -33,9 +33,7 @@ const client = new issuer.Client({
 // - "/callback" -> Finishes the oauth process. Exchanges oauth code to token
 const router = Router();
 
-
 router.get("/", (req, res) => {
-
   const state = generators.state();
 
   req.session.tmpState = state;
@@ -45,14 +43,13 @@ router.get("/", (req, res) => {
 router.get("/callback", async (req, res) => {
   try {
     const tokenSet = await client.oauthCallback(oauthRedirectUrl, req.query, {
-        state: req.session.tmpState,
+      state: req.session.tmpState,
     });
 
     req.session.tmpState = undefined;
     req.session.accessToken = tokenSet.access_token;
     req.session.refreshToken = tokenSet.refresh_token;
     req.session.userId = tokenSet.user.id;
-
 
     res.redirect("/canvas-kth-sandboxes/public");
   } catch (err) {
@@ -69,7 +66,7 @@ router.get("/callback", async (req, res) => {
     }
 
     log.error(
-      "Unknown error in oauth callback. The object thrown is not an Error instance"
+      "Unknown error in oauth callback. The object thrown is not an Error instance",
     );
     res.redirect("/canvas-kth-sandboxes/");
   }

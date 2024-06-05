@@ -8,7 +8,7 @@ declare module "openid-client" {
       id: number;
     };
   }
-} 
+}
 
 // Declare what is stored in the session
 declare module "express-session" {
@@ -21,4 +21,4 @@ declare module "express-session" {
   }
 }
 
-export {}
+export {};
