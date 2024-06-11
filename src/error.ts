@@ -48,7 +48,7 @@ export function errorHandler(
     if (err.code === 401) {
       return res.status(401).json({
         code: "unauthorized",
-        message: "Invalid access token",
+        message: "Invalid access token, user is unauthorized.",
       });
     } else if (err.code === 404) {
       return res.status(404).json({

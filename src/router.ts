@@ -23,16 +23,12 @@ router.use("/public", homepage);
 router.use("/public", staticMiddleWare(path.join(__dirname, "html")));
 router.get("/_monitor", monitor);
 
-async function homepage(req: Request, res: Response, next: Function) {
+async function homepage(req: Request, res: Response, next: any) {
   if (!(await checkAuth(req, res))) {
     res.redirect("/canvas-kth-sandboxes/auth");
-  } else if (!(await checkPermission(req, res))) {
-    res.status(403).json({
-      message: "Permission denied, du saknar behörighet för den här appen.",
-    });
-  } else {
-    next();
-  }
+  } else if ((await checkPermission(req, res, next))) {
+    next ();
+  } 
 }
 
 async function checkAuth(req: Request, res: Response): Promise<boolean> {
@@ -42,12 +38,12 @@ async function checkAuth(req: Request, res: Response): Promise<boolean> {
   return true;
 }
 
-async function checkPermission(req: Request, res: Response) {
+async function checkPermission(req: Request, res: Response, next: any) {
   if (!req.session.accessToken) {
     return false;
   }
 
-  const role = await getRole(req.session.accessToken);
+  const role = await getRole(req.session.accessToken).catch(next);
 
   if (!role) {
     return false;
