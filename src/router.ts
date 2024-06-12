@@ -25,11 +25,11 @@ const router = Router();
 router.get("/", (req: Request, res: Response) => {
   res.redirect("/canvas-kth-sandboxes/public");
 });
-router.use("/public", homepage);
+router.use("/public", checkUserMiddleware);
 router.use("/public", staticMiddleWare(path.join(__dirname, "html")));
 router.get("/_monitor", monitor);
 
-async function homepage(req: Request, res: Response, next: NextFunction) {
+async function checkUserMiddleware(req: Request, res: Response, next: NextFunction) {
   try {
     if (!(await checkAuth(req, res))) {
       res.redirect("/canvas-kth-sandboxes/auth");
@@ -93,11 +93,7 @@ router.post("/create-sandbox", async (req, res, next) => {
   }
 });
 
-async function createSandbox(
-  userName: string,
-  schoolId: string,
-  accessToken: string,
-): Promise<any> {
+async function createSandbox(userName: string, schoolId: string, accessToken: string): Promise<any> {
   if (!userName.includes("@")) userName = userName + "@kth.se";
 
   const user = await getUser(accessToken, userName);
