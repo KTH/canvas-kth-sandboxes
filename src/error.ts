@@ -53,7 +53,12 @@ export function errorHandler(
     } else if (err.code === 404) {
       return res.status(404).json({
         code: "not_found",
-        message: "Not found",
+        message: "Not found.",
+      });
+    } else if (err.code === 403) {
+      return res.status(403).json({
+        code: "unauthorized",
+        message: "User are not authorized to perform this task.",
       });
     }
   }
