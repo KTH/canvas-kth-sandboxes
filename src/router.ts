@@ -5,7 +5,13 @@ import {
   getRole,
   getCoursesForUser,
 } from "./canvasApi";
-import { Request, Response, Router, static as staticMiddleWare } from "express";
+import {
+  NextFunction,
+  Request,
+  Response,
+  Router,
+  static as staticMiddleWare,
+} from "express";
 import log from "skog";
 import path from "path";
 
@@ -23,12 +29,20 @@ router.use("/public", homepage);
 router.use("/public", staticMiddleWare(path.join(__dirname, "html")));
 router.get("/_monitor", monitor);
 
-async function homepage(req: Request, res: Response, next: any) {
-  if (!(await checkAuth(req, res))) {
-    res.redirect("/canvas-kth-sandboxes/auth");
-  } else if ((await checkPermission(req, res, next))) {
-    next ();
-  } 
+async function homepage(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (!(await checkAuth(req, res))) {
+      res.redirect("/canvas-kth-sandboxes/auth");
+    } else if (!(await checkPermission(req, res))) {
+      res
+        .status(403)
+        .send("Användaren har inte behörighet att utföra åtgärden");
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
 }
 
 async function checkAuth(req: Request, res: Response): Promise<boolean> {
@@ -38,12 +52,12 @@ async function checkAuth(req: Request, res: Response): Promise<boolean> {
   return true;
 }
 
-async function checkPermission(req: Request, res: Response, next: any) {
+async function checkPermission(req: Request, res: Response) {
   if (!req.session.accessToken) {
     return false;
   }
 
-  const role = await getRole(req.session.accessToken).catch(next);
+  const role = await getRole(req.session.accessToken);
 
   if (!role) {
     return false;
@@ -79,8 +93,11 @@ router.post("/create-sandbox", async (req, res, next) => {
   }
 });
 
-async function createSandbox( userName: string, schoolId: string, accessToken: string,): Promise<any> {
-
+async function createSandbox(
+  userName: string,
+  schoolId: string,
+  accessToken: string,
+): Promise<any> {
   if (!userName.includes("@")) userName = userName + "@kth.se";
 
   const user = await getUser(accessToken, userName);
@@ -116,7 +133,6 @@ async function createSandbox( userName: string, schoolId: string, accessToken: s
     await enrollUser(accessToken, testStudent, courseId, STUDENT);
   }
   log.info(`${userName} and teststudents have been enrolled.`);
-
 
   // return html code to add variable in the message, use a framework to make prettier.
   const htmlRes = `
