@@ -1,4 +1,4 @@
-import { CanvasApiError } from "@kth/canvas-api";
+import {  CanvasApiResponseError } from "@kth/canvas-api";
 import { Request, Response, NextFunction } from "express";
 import log from "skog";
 
@@ -44,18 +44,18 @@ export function errorHandler(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction,
 ) {
-  if (err instanceof CanvasApiError) {
-    if (err.code === 401) {
+  if (err instanceof CanvasApiResponseError) {
+    if (err.response.statusCode === 401) {
       return res.status(401).json({
         code: "unauthorized",
         message: "Invalid access token, user is unauthorized.",
       });
-    } else if (err.code === 404) {
+    } else if (err.response.statusCode === 404) {
       return res.status(404).json({
         code: "not_found",
         message: "Not found.",
       });
-    } else if (err.code === 403) {
+    } else if (err.response.statusCode === 403) {
       return res.status(403).json({
         code: "unauthorized",
         message: "User are not authorized to perform this task.",

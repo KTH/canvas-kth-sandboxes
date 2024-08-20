@@ -1,9 +1,8 @@
 /** Singleton object for Canvas API */
-const { default: CanvasApi, minimalErrorHandler } = require("@kth/canvas-api");
+import { CanvasApi } from "@kth/canvas-api";
 
-function getCanvasApiConnection(token: string) {
+function  getCanvasApiConnection(token: string) {
   const canvas = new CanvasApi(process.env.CANVAS_API_URL + "api/v1/", token);
-  canvas.errorHandler = minimalErrorHandler;
   return canvas;
 }
 interface RoleGenerator extends Generator<CourseInfo> {
@@ -25,10 +24,10 @@ async function getUser(token: string, userId: string) {
 
 async function getRole(token: string): Promise<Role[] | undefined> {
   const canvas = getCanvasApiConnection(token);
-  return await canvas.get(`accounts/1/admins/self`);
+  return (await canvas.get(`accounts/1/admins/self`)).json;
 }
 
-async function getCoursesForUser(token: string, userId: string): Promise<RoleGenerator> {
+async function getCoursesForUser(token: string, userId: string){
   const canvas = getCanvasApiConnection(token);
   return canvas.listItems(`users/${userId}/courses`);
 }
