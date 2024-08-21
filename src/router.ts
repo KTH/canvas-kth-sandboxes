@@ -97,7 +97,7 @@ async function createSandbox(userName: string, schoolId: string, accessToken: st
   if (!userName.includes("@")) userName = userName + "@kth.se";
 
   const user = await getUser(accessToken, userName);
-  const userId = user.body.id;
+  const userId = user.json.id;
   userName = userName.split("@")[0];
 
   type courseInfo = {
@@ -121,7 +121,7 @@ async function createSandbox(userName: string, schoolId: string, accessToken: st
   log.info(`Course created for ${userName}.`);
 
   // Lägg till användaren som både lärare och kursansvarig
-  const courseId = course.body.id;
+  const courseId = course.json.id;
   await enrollUser(accessToken, userId, courseId, COURSE_CORDINATOR);
   await enrollUser(accessToken, userId, courseId, TEACHER);
 
