@@ -17,6 +17,7 @@ declare module "express-session" {
     tmpCourseId: string;
     accessToken: string;
     refreshToken: string;
+    expiresAt: number;
     userId: number;
   }
 }

@@ -48,6 +48,10 @@ async function checkUserMiddleware(req: Request, res: Response, next: NextFuncti
 async function checkAuth(req: Request, res: Response): Promise<boolean> {
   if (!req.session.accessToken) {
     return false;
+  }else if(req.session.expiresAt){
+    const nowInSeconds = Math.floor(Date.now()/1000);
+    if (req.session.expiresAt < nowInSeconds)
+    return false;
   }
   return true;
 }

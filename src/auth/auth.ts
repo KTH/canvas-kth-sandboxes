@@ -50,6 +50,10 @@ router.get("/callback", async (req, res) => {
     req.session.accessToken = tokenSet.access_token;
     req.session.refreshToken = tokenSet.refresh_token;
     req.session.userId = tokenSet.user.id;
+    if(tokenSet.expires_in){
+    req.session.expiresAt = Date.now() + tokenSet.expires_in;
+   }
+
 
     res.redirect("/canvas-kth-sandboxes/public");
   } catch (err) {
