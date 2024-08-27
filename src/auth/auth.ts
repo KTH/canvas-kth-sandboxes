@@ -51,7 +51,7 @@ router.get("/callback", async (req, res) => {
     req.session.refreshToken = tokenSet.refresh_token;
     req.session.userId = tokenSet.user.id;
     if(tokenSet.expires_in){
-    req.session.expiresAt = Date.now() + tokenSet.expires_in;
+    req.session.expiresAt = Math.floor(Date.now()/1000) + tokenSet.expires_in;
    }
 
 
