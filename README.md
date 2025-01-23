@@ -5,3 +5,7 @@ Application for IT-support to create sanbox courserooms for KTH@Canvas
 npm i
 
 npm run dev
+
+## Tests
+
+TODO: write some tests
