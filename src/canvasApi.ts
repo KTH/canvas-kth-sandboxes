@@ -2,7 +2,8 @@
 import { CanvasApi } from "@kth/canvas-api";
 
 function  getCanvasApiConnection(token: string) {
-  const canvas = new CanvasApi(process.env.CANVAS_API_URL + "api/v1/", token);
+  const canvas_api_url = process.env.CANVAS_API_URL || "https://kth.test.instructure.com/"
+  const canvas = new CanvasApi(canvas_api_url + "api/v1/", token);
   return canvas;
 }
 interface RoleGenerator extends Generator<CourseInfo> {
