@@ -4,6 +4,8 @@
 <head>
   <title>Course Rooms in Canvas</title>
   <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+
 </head>
 
 <body>
@@ -13,19 +15,19 @@
       <form action="/canvas-kth-sandboxes/create-sandbox" method="POST">
         <label for="userId">KTH Användarnamn</label>
         <div class="wrapper">
-          <input type="text" id="userId" name="userId" placeholder="user@kth.se" autocomplete="off"/>
+          <input type="text" id="userId" name="userId" placeholder="user@kth.se" autocomplete="off" />
         </div>
         <label for="courseName">Kursnamn</label>
         <div class="wrapper">
-          <input type="text" id="courseName" name="courseName" placeholder="ABC HT24" autocomplete="off"/>
+          <input type="text" id="courseName" name="courseName" placeholder="ABC HT24 (för manuella kursrum)" autocomplete="off" />
         </div>
         <label for="courseCode">Kurskod</label>
         <div class="wrapper">
-          <input type="text" id="courseCode" name="courseCode" placeholder="ABC1234" autocomplete="off"/>
+          <input type="text" id="courseCode" name="courseCode" placeholder="ABC1234 (för manuella kursrum)" autocomplete="off" />
         </div>
         <label class="account-label" for="canvasAccount">Canvas underkonto</label>
         <div class="wrapper">
-          <select id="canvasAccounts">
+          <select id="canvasAccount" name="canvasAccount">
             <option value="15">ABE - Manually created course rounds</option>
             <option value="16">ABE - Sandboxes</option>
             <option value="48">ABE - Studios and courses</option>
@@ -39,13 +41,12 @@
             <option value="36">SCI - Manually created course rounds</option>
             <option value="44">SCI - Sandboxes</option>
             <option value="68">VS - Manually created course rounds</option>
-            <option value="69">VS - Sandboxes</option>
-            </select>
+            <option value="69" selected>VS - Sandboxes</option></select>
         </div>
-        <div class="checkbox-wrapper">
-          <input type="checkbox" id="testStudents" name="testStudents" value="testStudents" checked/>
+        <!-- <div class="checkbox-wrapper">
           <label for="testStudents">Lägg till teststudenter</label>
-        </div>
+          <input type="checkbox" id="testStudents" name="testStudents" value="testStudents" checked />
+        </div> -->
         <input class="kth-button" type="submit" value="Skapa Kursrum" />
       </form>
     </div>

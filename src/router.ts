@@ -105,12 +105,12 @@ async function monitor(req: Request, res: Response) {
 }
 
 router.post("/create-sandbox", async (req, res, next) => {
-  const courseInfo ={
-  courseName: req.body.courseName,
-  courseCode: req.body.courseCode,
-  userName: req.body.userId,
-  accountId: req.body.canvasAccount,
-  testStudents: req.body.testStudents,
+  const courseInfo = {
+    courseName: req.body.courseName,
+    courseCode: req.body.courseCode,
+    userName: req.body.userId,
+    accountId: req.body.canvasAccount,
+    // testStudents: req.body.testStudents,
   }
   const accessToken = req.session.accessToken;
 
@@ -138,8 +138,11 @@ async function createSandbox(courseInfo: any, accessToken: string): Promise<any>
     account_id: string;
   };
 
+  let course;
+
   if (SANDBOX_IDS.includes(courseInfo.accountId)) {
-    // Kolla om det finns en sandbox för andvändaren och under samma konto
+    // For sandboxes
+    // Check if user already have a Sandbox under the same subaccount
     const userCoursesList = await getCoursesForUser(accessToken, userId);
     const userCourses = await userCoursesList.toArray();
     if (
@@ -151,9 +154,28 @@ async function createSandbox(courseInfo: any, accessToken: string): Promise<any>
       return `There is already a Sandbox for ${courseInfo.userName}`;
     }
 
+    const data = {
+      course: {
+        name: `Sandbox ${courseInfo.userName}`,
+        course_code: `Sandbox ${courseInfo.userName}`,
+      },
+    };
+
+    course = await createCourse(accessToken, data, courseInfo.accountId);
+
+  } else {
+    // is not a Sandbox
+    const data = {
+      course: {
+        name: `${courseInfo.courseName}`,
+        course_code: `${courseInfo.courseCode}`,
+      },
+    };
+
+    course = await createCourse(accessToken, data, courseInfo.accountId);
+
   }
 
-  const course = await createCourse(accessToken, courseInfo.userName, courseInfo.accountId);
   log.info(`Course created for ${courseInfo.userName}.`);
 
   // Lägg till användaren som både lärare och kursansvarig
@@ -161,7 +183,7 @@ async function createSandbox(courseInfo: any, accessToken: string): Promise<any>
   await enrollUser(accessToken, userId, courseId, COURSE_CORDINATOR);
   await enrollUser(accessToken, userId, courseId, TEACHER);
 
-  if (courseInfo.testStudents === "testStudents") {
+  if (SANDBOX_IDS.includes(courseInfo.accountId)) {
     for (const testStudent of TEST_ACCOUNT_IDS) {
       await enrollUser(accessToken, testStudent, courseId, STUDENT);
     }
@@ -176,12 +198,12 @@ async function createSandbox(courseInfo: any, accessToken: string): Promise<any>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sandbox for Canvas@kth</title>
+        <title>Canvas course room</title>
     </head>
     <body>
-        <h1 id="message">Sandbox have been created for ${courseInfo.userName}</h1>
-        <p><a target="_blank" href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to Sandbox (opens in new tab) </a></p>
-        <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Create another sandbox? click here </a></p>
+        <h1 id="message">Course room have been created for ${courseInfo.userName}</h1>
+        <p><a target="_blank" href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to course room (opens in new tab) </a></p>
+        <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Create another course room in Canvas? click here </a></p>
     </body>
   </html>
   <style>

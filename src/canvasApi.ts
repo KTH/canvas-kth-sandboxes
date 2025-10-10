@@ -33,14 +33,8 @@ async function getCoursesForUser(token: string, userId: string){
   return canvas.listItems(`users/${userId}/courses`);
 }
 
-async function createCourse(token: string, userName: string, subAccountId: string) {
+async function createCourse(token: string, courseInfo: any, subAccountId: string) {
   const canvas = getCanvasApiConnection(token);
-  const courseInfo = {
-    course: {
-      name: `Sandbox ${userName}`,
-      course_code: `Sandbox ${userName}`,
-    },
-  };
   return canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
 }
 
