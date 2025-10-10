@@ -18,12 +18,10 @@ import path from "path";
 const SANDBOX_IDS = ["16", "65", "61", "43", "44", "69"];
 const TEST_ACCOUNT_IDS = ["97021", "97017", "97016", "97018", "97020", "97019"];
 const KTH_DEV_ID = 18;
-const COURSE_CORDINATOR = "9";
-const TEACHER = "4";
-const STUDENT = "3";
+
 export enum ROLES {
   STUDENT = 3,
-  COURSE_CORDINATOR = 9,
+  COURSE_COORDINATOR = 9,
   TEACHER = 4
 }
 
@@ -178,14 +176,14 @@ async function createSandbox(courseInfo: any, accessToken: string): Promise<any>
 
   log.info(`Course created for ${courseInfo.userName}.`);
 
-  // Lägg till användaren som både lärare och kursansvarig
+  // Add user as teacher and course-coordinator
   const courseId = course.json.id;
-  await enrollUser(accessToken, userId, courseId, COURSE_CORDINATOR);
-  await enrollUser(accessToken, userId, courseId, TEACHER);
+  await enrollUser(accessToken, userId, courseId, ROLES.COURSE_COORDINATOR);
+  await enrollUser(accessToken, userId, courseId, ROLES.TEACHER);
 
   if (SANDBOX_IDS.includes(courseInfo.accountId)) {
     for (const testStudent of TEST_ACCOUNT_IDS) {
-      await enrollUser(accessToken, testStudent, courseId, STUDENT);
+      await enrollUser(accessToken, testStudent, courseId, ROLES.STUDENT);
     }
 
     log.info(`${courseInfo.userName} and teststudents have been enrolled.`);

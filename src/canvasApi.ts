@@ -1,5 +1,6 @@
 /** Singleton object for Canvas API */
 import { CanvasApi } from "@kth/canvas-api";
+import { ROLES } from "./router";
 
 function  getCanvasApiConnection(token: string) {
   const canvas_api_url = process.env.CANVAS_API_URL || "https://kth.test.instructure.com/"
@@ -38,7 +39,7 @@ async function createCourse(token: string, courseInfo: any, subAccountId: string
   return canvas.request(`accounts/${subAccountId}/courses`, "POST", courseInfo);
 }
 
-async function enrollUser(token: string, userId: string, courseId: string, role: string) {
+async function enrollUser(token: string, userId: string, courseId: string, role: ROLES) {
   const canvas = getCanvasApiConnection(token);
   let user = {
     enrollment: {
