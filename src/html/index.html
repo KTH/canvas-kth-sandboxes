@@ -11,35 +11,43 @@
     <div class="form-container">
       <img src="./img/logo.png" alt="KTH logo" width="50" height="50" />
       <form action="/canvas-kth-sandboxes/create-sandbox" method="POST">
-        <label for="userId">KTH Username</label>
+        <label for="userId">KTH Användarnamn</label>
         <div class="wrapper">
           <input type="text" id="userId" name="userId" placeholder="user@kth.se" autocomplete="off"/>
         </div>
-        <label class="account-label" for="canvasAccount">Canvas subaccount</label>
+        <label for="courseName">Kursnamn</label>
+        <div class="wrapper">
+          <input type="text" id="courseName" name="courseName" placeholder="ABC HT24" autocomplete="off"/>
+        </div>
+        <label for="courseCode">Kurskod</label>
+        <div class="wrapper">
+          <input type="text" id="courseCode" name="courseCode" placeholder="ABC1234" autocomplete="off"/>
+        </div>
+        <label class="account-label" for="canvasAccount">Canvas underkonto</label>
         <div class="wrapper">
           <!-- <input list="canvasAccounts" id="canvasAccount" name="account"> -->
           <select id="canvasAccounts">
-            <option value="ABE - Manually created course rounds">ABE - Manually created course rounds</option>
-            <option value="ABE - Sandboxes">ABE - Sandboxes</option>
-            <option value="ABE - Studios and courses">ABE - Studios and courses</option>
-            <option value="CBH - KTH Internal Training Courses">CBH - KTH Internal Training Courses</option>
-            <option value="CBH - Manually created course rounds">CBH - Manually created course rounds</option>
-            <option value="CBH - Sandboxes">CBH - Sandboxes</option>
-            <option value="EECS - Manually created course rounds">EECS - Manually created course rounds</option>
-            <option value="EECS - Sandboxes">EECS - Sandboxes</option>
-            <option value="ITM - Manually created course rounds">ITM - Manually created course rounds</option>
-            <option value="ITM - Sandboxes">ITM - Sandboxes</option>
-            <option value="SCI - Manually created course rounds">SCI - Manually created course rounds</option>
-            <option value="SCI - Sandboxes">SCI - Sandboxes</option>
-            <option value="VS - Manually created course rounds">VS - Manually created course rounds</option>
-            <option value="VS - Sandboxes">VS - Sandboxes</option>
+            <option value="15">ABE - Manually created course rounds</option>
+            <option value="16">ABE - Sandboxes</option>
+            <option value="48">ABE - Studios and courses</option>
+            <option value="218">KTH Internal Training Courses</option>
+            <option value="64">CBH - Manually created course rounds</option>
+            <option value="65">CBH - Sandboxes</option>
+            <option value="60">EECS - Manually created course rounds</option>
+            <option value="61">EECS - Sandboxes</option>
+            <option value="35">ITM - Manually created course rounds</option>
+            <option value="43">ITM - Sandboxes</option>
+            <option value="36">SCI - Manually created course rounds</option>
+            <option value="44">SCI - Sandboxes</option>
+            <option value="68">VS - Manually created course rounds</option>
+            <option value="69">VS - Sandboxes</option>
             </select>
         </div>
         <div class="checkbox-wrapper">
-          <input type="checkbox" id="testStudents" name="testStudents" checked/>
-          <label for="testStudents">Add test students</label>
+          <input type="checkbox" id="testStudents" name="testStudents" value="testStudents" checked/>
+          <label for="testStudents">Lägg till teststudenter</label>
         </div>
-        <input class="kth-button" type="submit" value="Create Sandbox" />
+        <input class="kth-button" type="submit" value="Skapa Kursrum" />
       </form>
     </div>
   </div>
