@@ -25,22 +25,6 @@ export enum ROLES {
   TEACHER = 4
 }
 
-const ACCOUNTS = {
-  "ABE - Manually created course rounds": "15",
-  "ABE - Sandboxes": "16",
-  "ABE - Studios and courses": "48",
-  "KTH Internal Training Courses": "218",
-  "CBH - Manually created course rounds": "64",
-  "CBH - Sandboxes": "65",
-  "EECS - Manually created course rounds": "60",
-  "EECS - Sandboxes": "61",
-  "ITM - Manually created course rounds": "35",
-  "ITM - Sandboxes": "43",
-  "SCI - Manually created course rounds": "36",
-  "SCI - Sandboxes": "44",
-  "VS - Manually created course rounds": "68",
-  "VS - Sandboxes": "69",
-}
 
 const router = Router();
 router.get("/", (req: Request, res: Response) => {
