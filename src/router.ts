@@ -15,11 +15,34 @@ import {
 import log from "skog";
 import path from "path";
 
+const SANDBOX_IDS = ["16", "65", "61", "43", "44", "69"];
 const TEST_ACCOUNT_IDS = ["97021", "97017", "97016", "97018", "97020", "97019"];
 const KTH_DEV_ID = 18;
 const COURSE_CORDINATOR = "9";
 const TEACHER = "4";
 const STUDENT = "3";
+export enum ROLES {
+  STUDENT = 3,
+  COURSE_CORDINATOR = 9,
+  TEACHER = 4
+}
+
+const ACCOUNTS = {
+  "ABE - Manually created course rounds": "15",
+  "ABE - Sandboxes": "16",
+  "ABE - Studios and courses": "48",
+  "KTH Internal Training Courses": "218",
+  "CBH - Manually created course rounds": "64",
+  "CBH - Sandboxes": "65",
+  "EECS - Manually created course rounds": "60",
+  "EECS - Sandboxes": "61",
+  "ITM - Manually created course rounds": "35",
+  "ITM - Sandboxes": "43",
+  "SCI - Manually created course rounds": "36",
+  "SCI - Sandboxes": "44",
+  "VS - Manually created course rounds": "68",
+  "VS - Sandboxes": "69",
+}
 
 const router = Router();
 router.get("/", (req: Request, res: Response) => {
@@ -48,8 +71,8 @@ async function checkUserMiddleware(req: Request, res: Response, next: NextFuncti
 async function checkAuth(req: Request, res: Response): Promise<boolean> {
   if (!req.session.accessToken) {
     return false;
-  }else if(req.session.expiresAt){
-    const nowInSeconds = Math.floor(Date.now()/1000);
+  } else if (req.session.expiresAt) {
+    const nowInSeconds = Math.floor(Date.now() / 1000);
     if (req.session.expiresAt < nowInSeconds)
       return false;
   }
@@ -66,7 +89,7 @@ async function checkPermission(req: Request, res: Response) {
   if (!role) {
     return false;
   }
-  if (!role.find((r) => (r.role_id = KTH_DEV_ID))) {
+  if (!role.find((r) => (r.role_id === KTH_DEV_ID))) {
     return false;
   }
   return true;
@@ -82,13 +105,19 @@ async function monitor(req: Request, res: Response) {
 }
 
 router.post("/create-sandbox", async (req, res, next) => {
-  const userName = req.body.userId;
-  const schoolId = req.body.school;
+  const courseInfo ={
+  courseName: req.body.courseName,
+  courseCode: req.body.courseCode,
+  userName: req.body.userId,
+  accountId: req.body.canvasAccount,
+  testStudents: req.body.testStudents,
+  }
   const accessToken = req.session.accessToken;
+
   if (!accessToken) {
     return;
   }
-  const response = await createSandbox(userName, schoolId, accessToken).catch(
+  const response = await createSandbox(courseInfo, accessToken).catch(
     next,
   );
   // errorHandler returns undefined when error occurs.
@@ -97,42 +126,48 @@ router.post("/create-sandbox", async (req, res, next) => {
   }
 });
 
-async function createSandbox(userName: string, schoolId: string, accessToken: string): Promise<any> {
-  if (!userName.includes("@")) userName = userName + "@kth.se";
+async function createSandbox(courseInfo: any, accessToken: string): Promise<any> {
+  if (!courseInfo.userName.includes("@")) courseInfo.userName = courseInfo.userName + "@kth.se";
 
-  const user = await getUser(accessToken, userName);
+  const user = await getUser(accessToken, courseInfo.userName);
   const userId = user.json.id;
-  userName = userName.split("@")[0];
+  courseInfo.userName = courseInfo.userName.split("@")[0];
 
   type courseInfo = {
     name: string;
     account_id: string;
   };
 
-  // Kolla om det finns en sandbox för andvändaren och under samma konto
-  const userCoursesList = await getCoursesForUser(accessToken, userId);
-  const userCourses = await userCoursesList.toArray();
-  if (
-    userCourses.find(
-      (course: courseInfo) =>
-        course.name === `Sandbox ${userName}` && course.account_id == schoolId,
-    )
-  ) {
-    return `There is already a course for ${userName}`;
+  if (SANDBOX_IDS.includes(courseInfo.accountId)) {
+    // Kolla om det finns en sandbox för andvändaren och under samma konto
+    const userCoursesList = await getCoursesForUser(accessToken, userId);
+    const userCourses = await userCoursesList.toArray();
+    if (
+      userCourses.find(
+        (course: courseInfo) =>
+          course.name === `Sandbox ${courseInfo.userName}` && course.account_id == courseInfo.accountId,
+      )
+    ) {
+      return `There is already a Sandbox for ${courseInfo.userName}`;
+    }
+
   }
 
-  const course = await createCourse(accessToken, userName, schoolId);
-  log.info(`Course created for ${userName}.`);
+  const course = await createCourse(accessToken, courseInfo.userName, courseInfo.accountId);
+  log.info(`Course created for ${courseInfo.userName}.`);
 
   // Lägg till användaren som både lärare och kursansvarig
   const courseId = course.json.id;
   await enrollUser(accessToken, userId, courseId, COURSE_CORDINATOR);
   await enrollUser(accessToken, userId, courseId, TEACHER);
 
-  for (const testStudent of TEST_ACCOUNT_IDS) {
-    await enrollUser(accessToken, testStudent, courseId, STUDENT);
+  if (courseInfo.testStudents === "testStudents") {
+    for (const testStudent of TEST_ACCOUNT_IDS) {
+      await enrollUser(accessToken, testStudent, courseId, STUDENT);
+    }
+
+    log.info(`${courseInfo.userName} and teststudents have been enrolled.`);
   }
-  log.info(`${userName} and teststudents have been enrolled.`);
 
   // return html code to add variable in the message, use a framework to make prettier.
   const htmlRes = `
@@ -144,7 +179,7 @@ async function createSandbox(userName: string, schoolId: string, accessToken: st
         <title>Sandbox for Canvas@kth</title>
     </head>
     <body>
-        <h1 id="message">Sandbox have been created for ${userName}</h1>
+        <h1 id="message">Sandbox have been created for ${courseInfo.userName}</h1>
         <p><a target="_blank" href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to Sandbox (opens in new tab) </a></p>
         <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Create another sandbox? click here </a></p>
     </body>
