@@ -1,36 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Sandbox for Canvas@kth</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <div class="form-container">
-        <img src="./img/logo.png" alt="KTH logo" width="50" height="50" />
-        <form action="/canvas-kth-sandboxes/create-sandbox" method="POST">
-          <label for="userId">KTH Username</label><br />
-          <input
-            type="text"
-            id="userId"
-            name="userId"
-            placeholder="user@kth.se"
-          /><br />
-          <label class="school-label" for="school">School Sandbox Account</label
-          ><br />
-          <div class="wrapper">
-            <select id="school" name="school" value="-">
-              <option value="16">ABE - Sandboxes</option>
-              <option value="61">EECS - Sandboxes</option>
-              <option value="43">ITM - Sandboxes</option>
-              <option value="69">VS - Sandboxes</option>
-              <option value="44">SCI - Sandboxes</option>
-              <option value="65">CBH - Sandboxes</option></select
-            ><br />
-          </div>
-          <input class="kth-button" type="submit" value="Create Sandbox" />
-        </form>
-      </div>
+
+<head>
+  <title>Course Rooms in Canvas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="form-container">
+      <img src="./img/logo.png" alt="KTH logo" width="50" height="50" />
+      <form action="/canvas-kth-sandboxes/create-sandbox" method="POST">
+        <label for="userId">KTH Username</label>
+        <div class="wrapper">
+          <input type="text" id="userId" name="userId" placeholder="user@kth.se" autocomplete="off"/>
+        </div>
+        <label class="account-label" for="canvasAccount">Canvas subaccount</label>
+        <div class="wrapper">
+          <!-- <input list="canvasAccounts" id="canvasAccount" name="account"> -->
+          <select id="canvasAccounts">
+            <option value="ABE - Manually created course rounds">ABE - Manually created course rounds</option>
+            <option value="ABE - Sandboxes">ABE - Sandboxes</option>
+            <option value="ABE - Studios and courses">ABE - Studios and courses</option>
+            <option value="CBH - KTH Internal Training Courses">CBH - KTH Internal Training Courses</option>
+            <option value="CBH - Manually created course rounds">CBH - Manually created course rounds</option>
+            <option value="CBH - Sandboxes">CBH - Sandboxes</option>
+            <option value="EECS - Manually created course rounds">EECS - Manually created course rounds</option>
+            <option value="EECS - Sandboxes">EECS - Sandboxes</option>
+            <option value="ITM - Manually created course rounds">ITM - Manually created course rounds</option>
+            <option value="ITM - Sandboxes">ITM - Sandboxes</option>
+            <option value="SCI - Manually created course rounds">SCI - Manually created course rounds</option>
+            <option value="SCI - Sandboxes">SCI - Sandboxes</option>
+            <option value="VS - Manually created course rounds">VS - Manually created course rounds</option>
+            <option value="VS - Sandboxes">VS - Sandboxes</option>
+            </select>
+        </div>
+        <div class="checkbox-wrapper">
+          <input type="checkbox" id="testStudents" name="testStudents" checked/>
+          <label for="testStudents">Add test students</label>
+        </div>
+        <input class="kth-button" type="submit" value="Create Sandbox" />
+      </form>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
