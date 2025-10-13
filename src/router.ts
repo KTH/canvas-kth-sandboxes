@@ -25,6 +25,20 @@ export enum ROLES {
   TEACHER = 4
 }
 
+type CourseInfo = {
+    courseName: string,
+    courseCode: string,
+    userName: string,
+    accountId: string
+}
+
+export type CanvasCourseInfo = {
+  course: {
+        name: string,
+        course_code: string,
+      },
+}
+
 
 const router = Router();
 router.get("/", (req: Request, res: Response) => {
@@ -92,7 +106,6 @@ router.post("/create-sandbox", async (req, res, next) => {
     courseCode: req.body.courseCode,
     userName: req.body.userId,
     accountId: req.body.canvasAccount,
-    // testStudents: req.body.testStudents,
   }
   const accessToken = req.session.accessToken;
 
@@ -108,7 +121,7 @@ router.post("/create-sandbox", async (req, res, next) => {
   }
 });
 
-async function createSandbox(courseInfo: any, accessToken: string): Promise<any> {
+async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promise<string> {
   if (!courseInfo.userName.includes("@")) courseInfo.userName = courseInfo.userName + "@kth.se";
 
   const user = await getUser(accessToken, courseInfo.userName);
