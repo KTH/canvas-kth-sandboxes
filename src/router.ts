@@ -133,7 +133,7 @@ async function createSandbox(courseInfo: any, accessToken: string): Promise<any>
           course.name === `Sandbox ${courseInfo.userName}` && course.account_id == courseInfo.accountId,
       )
     ) {
-      return `There is already a Sandbox for ${courseInfo.userName}`;
+      return `Det finns redan en Sandbox för ${courseInfo.userName}`;
     }
 
     const data = {
@@ -147,6 +147,8 @@ async function createSandbox(courseInfo: any, accessToken: string): Promise<any>
 
   } else {
     // is not a Sandbox
+    if (courseInfo.courseName === undefined || courseInfo.courseCode === undefined ) 
+      return `Manuella kursrum kräver både Kurskod och Kursnamn`;
     const data = {
       course: {
         name: `${courseInfo.courseName}`,
@@ -183,9 +185,9 @@ async function createSandbox(courseInfo: any, accessToken: string): Promise<any>
         <title>Canvas course room</title>
     </head>
     <body>
-        <h1 id="message">Course room have been created for ${courseInfo.userName}</h1>
-        <p><a target="_blank" href="${process.env.CANVAS_API_URL}courses/${courseId}">URL to course room (opens in new tab) </a></p>
-        <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Create another course room in Canvas? click here </a></p>
+        <h1 id="message">Ett kursrum har skapats för ${courseInfo.userName}</h1>
+        <p><a target="_blank" href="${process.env.CANVAS_API_URL}courses/${courseId}">URL till kursrummet (öppnas i ny flik) </a></p>
+        <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Vill du skapa fler kursrum? klicka här</a></p>
     </body>
   </html>
   <style>
