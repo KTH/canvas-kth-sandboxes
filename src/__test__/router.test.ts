@@ -24,10 +24,8 @@ describe("Testing logic for creating sandboxes", () => {
       courseName: "courseName",
       courseCode: "courseCode",
       userName: "canvasUserId",
-      accountId: "accountId",
+      accountId: "16",
     }
-    const userId = "1234";
-    const schoolId = "school_id";
 
     const response = await createSandbox(courseInfo, accessToken);
     expect(CanvasApiMock.result()).toMatchSnapshot();
