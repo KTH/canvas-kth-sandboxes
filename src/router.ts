@@ -147,8 +147,10 @@ async function createSandbox(courseInfo: any, accessToken: string): Promise<any>
 
   } else {
     // is not a Sandbox
-    if (courseInfo.courseName === undefined || courseInfo.courseCode === undefined ) 
-      return `Manuella kursrum kräver både Kurskod och Kursnamn`;
+    if (courseInfo.courseName === "" || courseInfo.courseCode === "" ) {
+      return `Error: Manuella kursrum kräver både Kurskod och Kursnamn,
+      <a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> testa igen </a>`;
+    }
     const data = {
       course: {
         name: `${courseInfo.courseName}`,
