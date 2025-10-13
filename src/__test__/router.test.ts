@@ -15,14 +15,21 @@ for (let i = 0; i < 7; i++) {
 }
 
 describe("Testing logic for creating sandboxes", () => {
-  test("testsuite works", () => {});
+  test("testsuite works", () => { });
 
   // skipping because mock isn't configured properly
   test.skip("CreateSandbox, input res and req output html", async () => {
     const accessToken = "access_token";
+    const courseInfo = {
+      courseName: "courseName",
+      courseCode: "courseCode",
+      userName: "canvasUserId",
+      accountId: "accountId",
+    }
     const userId = "1234";
     const schoolId = "school_id";
-    const response = await createSandbox(userId, schoolId, accessToken);
+
+    const response = await createSandbox(courseInfo, accessToken);
     expect(CanvasApiMock.result()).toMatchSnapshot();
     expect(response).toMatchSnapshot();
   });
