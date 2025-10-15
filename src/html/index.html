@@ -49,4 +49,20 @@
   </div>
 </body>
 
+<script>
+document.querySelector("form").addEventListener("submit", (e) => {
+  const fields = ["userId", "courseName", "courseCode"];
+  const jsPattern = /<script|on\w+=|javascript:/i;
+
+  for (const id of fields) {
+    const value = document.getElementById(id).value;
+    if (jsPattern.test(value)) {
+      e.preventDefault();
+      alert("Ogiltig inmatning – försök inte köra JavaScript!");
+      return;
+    }
+  }
+});
+</script>
+
 </html>

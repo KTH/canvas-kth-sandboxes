@@ -14,6 +14,7 @@ import {
 } from "express";
 import log from "skog";
 import path from "path";
+import validator from "validator";
 
 const SANDBOX_IDS = ["16", "65", "61", "43", "44", "69"];
 const TEST_ACCOUNT_IDS = ["97021", "97017", "97016", "97018", "97020", "97019"];
@@ -102,11 +103,18 @@ async function monitor(req: Request, res: Response) {
 
 router.post("/create-sandbox", async (req, res, next) => {
   const courseInfo = {
-    courseName: req.body.courseName,
-    courseCode: req.body.courseCode,
-    userName: req.body.userId,
-    accountId: req.body.canvasAccount,
+    courseName: validator.escape(req.body.courseName),
+    courseCode: validator.escape(req.body.courseCode),
+    userName: validator.escape(req.body.userId),
+    accountId: validator.escape(req.body.canvasAccount),
   }
+
+  for(const [key, value] of Object.entries(courseInfo)){
+    if(value !== validator.unescape(value)){
+    return res.send(`Error: <, >, &, ', " and / are not allowed characters`);
+    }
+  }
+
   const accessToken = req.session.accessToken;
 
   if (!accessToken) {
