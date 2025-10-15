@@ -26,18 +26,11 @@ export enum ROLES {
   TEACHER = 4
 }
 
-type CourseInfo = {
-    courseName: string,
-    courseCode: string,
-    userName: string,
-    accountId: string
-}
-
-export type CanvasCourseInfo = {
-  course: {
-        name: string,
-        course_code: string,
-      },
+export type CourseInfo = {
+  courseName: string,
+  courseCode: string,
+  userName: string,
+  accountId: string
 }
 
 
@@ -109,9 +102,9 @@ router.post("/create-sandbox", async (req, res, next) => {
     accountId: validator.escape(req.body.canvasAccount),
   }
 
-  for(const [key, value] of Object.entries(courseInfo)){
-    if(value !== validator.unescape(value)){
-    return res.send(`Error: <, >, &, ', " and / are not allowed characters`);
+  for (const [key, value] of Object.entries(courseInfo)) {
+    if (value !== validator.unescape(value)) {
+      return res.send(`Error: <, >, &, ', " and / are not allowed characters`);
     }
   }
 
@@ -158,25 +151,21 @@ async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promi
     }
 
     const data = {
-      course: {
-        name: `Sandbox ${courseInfo.userName}`,
-        course_code: `Sandbox ${courseInfo.userName}`,
-      },
+      courseName: `Sandbox ${courseInfo.userName}`,
+      courseCode: `Sandbox ${courseInfo.userName}`,
     };
 
     course = await createCourse(accessToken, data, courseInfo.accountId);
 
   } else {
     // is not a Sandbox
-    if (courseInfo.courseName === "" || courseInfo.courseCode === "" ) {
+    if (courseInfo.courseName === "" || courseInfo.courseCode === "") {
       return `Error: Manuella kursrum kräver både Kurskod och Kursnamn,
       <a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> testa igen </a>`;
     }
     const data = {
-      course: {
-        name: `${courseInfo.courseName}`,
-        course_code: `${courseInfo.courseCode}`,
-      },
+      courseName: `${courseInfo.courseName}`,
+      courseCode: `${courseInfo.courseCode}`,
     };
 
     course = await createCourse(accessToken, data, courseInfo.accountId);
@@ -184,9 +173,10 @@ async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promi
   }
 
   log.info(`Course created for ${courseInfo.userName}.`);
+  
+  const courseId = course.json.id;
 
   // Add user as teacher and course-coordinator
-  const courseId = course.json.id;
   await enrollUser(accessToken, userId, courseId, ROLES.COURSE_COORDINATOR);
   await enrollUser(accessToken, userId, courseId, ROLES.TEACHER);
 

@@ -4,7 +4,9 @@
 <head>
   <title>Course Rooms in Canvas</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="shortcut icon" href="https://www.kth.se/polopoly_fs/1.1273705.1692876856!/favicon.ico">
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 </head>
 
@@ -19,11 +21,13 @@
         </div>
         <label for="courseName">Kursnamn</label>
         <div class="wrapper">
-          <input type="text" id="courseName" name="courseName" placeholder="ABC HT24 (för manuella kursrum)" autocomplete="off" />
+          <input type="text" id="courseName" name="courseName" placeholder="ABC HT24 (för manuella kursrum)"
+            autocomplete="off" />
         </div>
         <label for="courseCode">Kurskod</label>
         <div class="wrapper">
-          <input type="text" id="courseCode" name="courseCode" placeholder="ABC1234 (för manuella kursrum)" autocomplete="off" />
+          <input type="text" id="courseCode" name="courseCode" placeholder="ABC1234 (för manuella kursrum)"
+            autocomplete="off" />
         </div>
         <label class="account-label" for="canvasAccount">Canvas underkonto</label>
         <div class="wrapper">
@@ -41,7 +45,8 @@
             <option value="36">SCI - Manually created course rounds</option>
             <option value="44">SCI - Sandboxes</option>
             <option value="68">VS - Manually created course rounds</option>
-            <option value="69" selected>VS - Sandboxes</option></select>
+            <option value="69" selected>VS - Sandboxes</option>
+          </select>
         </div>
         <input class="kth-button" type="submit" value="Skapa Kursrum" />
       </form>
@@ -50,19 +55,19 @@
 </body>
 
 <script>
-document.querySelector("form").addEventListener("submit", (e) => {
-  const fields = ["userId", "courseName", "courseCode"];
-  const jsPattern = /<script|on\w+=|javascript:/i;
+  document.querySelector("form").addEventListener("submit", (e) => {
+    const fields = ["userId", "courseName", "courseCode"];
+    const jsPattern = /<script|on\w+=|javascript:/i;
 
-  for (const id of fields) {
-    const value = document.getElementById(id).value;
-    if (jsPattern.test(value)) {
-      e.preventDefault();
-      alert("Ogiltig inmatning – försök inte köra JavaScript!");
-      return;
+    for (const id of fields) {
+      const value = document.getElementById(id).value;
+      if (jsPattern.test(value)) {
+        e.preventDefault();
+        alert("Ogiltig inmatning – försök inte köra JavaScript!");
+        return;
+      }
     }
-  }
-});
+  });
 </script>
 
 </html>
