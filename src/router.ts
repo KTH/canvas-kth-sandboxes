@@ -14,7 +14,7 @@ import {
 } from "express";
 import log from "skog";
 import path from "path";
-import validator from "validator";
+
 
 const SANDBOX_IDS = ["16", "65", "61", "43", "44", "69"];
 const TEST_ACCOUNT_IDS = ["97021", "97017", "97016", "97018", "97020", "97019"];
@@ -79,10 +79,8 @@ async function checkPermission(req: Request, res: Response) {
   if (!role) {
     return false;
   }
-  if (!role.find((r) => (r.role_id === KTH_DEV_ID))) {
-    return false;
-  }
-  return true;
+  
+  return !!role.find((r) => (r.role_id === KTH_DEV_ID));
 }
 
 async function monitor(req: Request, res: Response) {
@@ -96,18 +94,12 @@ async function monitor(req: Request, res: Response) {
 
 router.post("/create-sandbox", async (req, res, next) => {
   const courseInfo = {
-    courseName: validator.escape(req.body.courseName),
-    courseCode: validator.escape(req.body.courseCode),
-    userName: validator.escape(req.body.userId),
-    accountId: validator.escape(req.body.canvasAccount),
+    courseName: req.body.courseName,
+    courseCode: req.body.courseCode,
+    userName: req.body.userId,
+    accountId: req.body.canvasAccount,
   }
-
-  for (const [key, value] of Object.entries(courseInfo)) {
-    if (value !== validator.unescape(value)) {
-      return res.send(`Error: <, >, &, ', " and / are not allowed characters`);
-    }
-  }
-
+  
   const accessToken = req.session.accessToken;
 
   if (!accessToken) {
@@ -163,9 +155,11 @@ async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promi
       return `Error: Manuella kursrum kräver både Kurskod och Kursnamn,
       <a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> testa igen </a>`;
     }
+
+    const { courseName, courseCode } = courseInfo;
     const data = {
-      courseName: `${courseInfo.courseName}`,
-      courseCode: `${courseInfo.courseCode}`,
+      courseName,
+      courseCode,
     };
 
     course = await createCourse(accessToken, data, courseInfo.accountId);
@@ -173,7 +167,7 @@ async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promi
   }
 
   log.info(`Course created for ${courseInfo.userName}.`);
-  
+
   const courseId = course.json.id;
 
   // Add user as teacher and course-coordinator
