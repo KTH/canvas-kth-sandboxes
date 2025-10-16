@@ -13,5 +13,6 @@ let opts = {
   cert: selfSigned.cert,
 };
 https.createServer(opts, server).listen(process.env.PORT, () => {
-  log.info("Sandbox app up and running");
+  log.info(`Sandbox is up and running on https://localdev.kth.se:3000/canvas-kth-sandboxes/public`);
+  // localdev.kth.se is something we set up in .hosts to enable https and local certificates.
 });
