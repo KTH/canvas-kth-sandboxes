@@ -27,8 +27,8 @@ export enum ROLES {
 }
 
 export type CourseInfo = {
-  courseName: string,
-  courseCode: string,
+  name: string,
+  course_code: string,
   userName: string,
   accountId: string
 }
@@ -94,8 +94,8 @@ async function monitor(req: Request, res: Response) {
 
 router.post("/create-sandbox", async (req, res, next) => {
   const courseInfo = {
-    courseName: req.body.courseName,
-    courseCode: req.body.courseCode,
+    name: req.body.courseName,
+    course_code: req.body.courseCode,
     userName: req.body.userId,
     accountId: req.body.canvasAccount,
   }
@@ -143,23 +143,23 @@ async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promi
     }
 
     const data = {
-      courseName: `Sandbox ${courseInfo.userName}`,
-      courseCode: `Sandbox ${courseInfo.userName}`,
+      name: `Sandbox ${courseInfo.userName}`,
+      course_code: `Sandbox ${courseInfo.userName}`,
     };
 
     course = await createCourse(accessToken, data, courseInfo.accountId);
 
   } else {
     // is not a Sandbox
-    if (courseInfo.courseName === "" || courseInfo.courseCode === "") {
+    if (courseInfo.name === "" || courseInfo.course_code === "") {
       return `Error: Manuella kursrum kräver både Kurskod och Kursnamn,
       <a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> testa igen </a>`;
     }
 
-    const { courseName, courseCode } = courseInfo;
+    const { name: courseName, course_code: courseCode } = courseInfo;
     const data = {
-      courseName,
-      courseCode,
+      name: courseName,
+      course_code: courseCode,
     };
 
     course = await createCourse(accessToken, data, courseInfo.accountId);
@@ -179,7 +179,7 @@ async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promi
       await enrollUser(accessToken, testStudent, courseId, ROLES.STUDENT);
     }
 
-    log.info(`${courseInfo.userName} and teststudents have been enrolled.`);
+    log.info(`${courseInfo.name} and teststudents have been enrolled.`);
   }
 
   // return html code to add variable in the message, use a framework to make prettier.
@@ -192,7 +192,7 @@ async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promi
         <title>Canvas course room</title>
     </head>
     <body>
-        <h1 id="message">Ett kursrum har skapats för ${courseInfo.userName}</h1>
+        <h1 id="message">Ett kursrum har skapats för ${courseInfo.name}</h1>
         <p><a target="_blank" href="${process.env.CANVAS_API_URL}courses/${courseId}">URL till kursrummet (öppnas i ny flik) </a></p>
         <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Vill du skapa fler kursrum? klicka här</a></p>
     </body>
