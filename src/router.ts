@@ -179,7 +179,7 @@ async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promi
       await enrollUser(accessToken, testStudent, courseId, ROLES.STUDENT);
     }
 
-    log.info(`${courseInfo.name} and teststudents have been enrolled.`);
+    log.info(`${courseInfo.userName} and teststudents have been enrolled.`);
   }
 
   // return html code to add variable in the message, use a framework to make prettier.
@@ -192,7 +192,7 @@ async function createSandbox(courseInfo: CourseInfo, accessToken: string): Promi
         <title>Canvas course room</title>
     </head>
     <body>
-        <h1 id="message">Ett kursrum har skapats för ${courseInfo.name}</h1>
+        <h1 id="message">Ett kursrum har skapats för ${courseInfo.userName}</h1>
         <p><a target="_blank" href="${process.env.CANVAS_API_URL}courses/${courseId}">URL till kursrummet (öppnas i ny flik) </a></p>
         <p><a href="${process.env.PROXY_HOST}/canvas-kth-sandboxes/public"> Vill du skapa fler kursrum? klicka här</a></p>
     </body>
