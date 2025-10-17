@@ -21,8 +21,8 @@ describe("Testing logic for creating sandboxes", () => {
   test.skip("CreateSandbox, input res and req output html", async () => {
     const accessToken = "access_token";
     const courseInfo = {
-      courseName: "courseName",
-      courseCode: "courseCode",
+      name: "courseName",
+      course_code: "courseCode",
       userName: "canvasUserId",
       accountId: "16",
     }
