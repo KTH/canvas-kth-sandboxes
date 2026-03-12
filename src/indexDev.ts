@@ -6,7 +6,7 @@ import log from "skog";
 
 const selfSigned = selfsigned.generate(
   [{ name: "commonName", value: "kth.se" }],
-  { days: 365 },
+  { days: 365, keySize: 2048 },
 );
 let opts = {
   key: selfSigned.private,
